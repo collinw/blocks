@@ -1,5 +1,5 @@
 function foozle(): number {
-  return 5;
+  return 555;
 }
 
 foozle();
