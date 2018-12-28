@@ -29,7 +29,6 @@
     "typescript": "~3.1.0"
   },
   "dependencies": {
-    "jquery": "^3.3.1",
-    "maths.ts": "0.0.8"
+    "jquery": "^3.3.1"
   }
 }
