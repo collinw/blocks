@@ -3,6 +3,7 @@
     "rootDir": ".",
     "outDir": "build",
 
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
