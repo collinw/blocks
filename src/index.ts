@@ -11,6 +11,7 @@ function main() {
   state.board.Set(1, 2, 2);
 
   ui.Draw(state);
+  ui.Draw(state);
 }
 
 $(document).ready(main);

@@ -4,6 +4,8 @@ import * as blocks from './blocks';
 
 export function Draw(state: blocks.GameState) {
   const board = $('#board');
+  board.empty();
+
   for (let m = 0; m < state.board.M; m++) {
     const row = $('<tr></tr>');
     for (let n = 0; n < state.board.N; n++) {
