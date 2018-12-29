@@ -9,7 +9,7 @@
     "allowUnusedLabels": false,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2016"],
+    "lib": ["dom", "es2017"],
     "module": "commonjs",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
@@ -17,15 +17,14 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2016"
+    "target": "es2017"
   },
   "include": [
     "src/*.ts",
     "src/**/*.ts",
-    "test/*.ts",
-    "test/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/**/*.spec.ts"
   ]
 }

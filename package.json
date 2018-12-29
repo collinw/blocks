@@ -10,23 +10,27 @@
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "compile": "tsc -p .",
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "check": "gts check",
     "clean": "gts clean",
     "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run check"
+    "pretest": "npm run compile"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
     "@types/jquery": "^3.3.29",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
     "gts": "^0.9.0",
+    "mocha": "^5.2.0",
     "rollup": "^0.68.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-typescript": "^1.0.0",
+    "ts-node": "^7.0.1",
     "typescript": "~3.1.0"
   },
   "dependencies": {
