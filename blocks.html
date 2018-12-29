@@ -1,5 +1,39 @@
 <html>
+  <head>
+    <style>
+      #board {
+        font-family: 'monospace';
+        text-align: center;
+        border: 1px solid black;
+        border-spacing: 0px;
+      }
+      #board tr {
+        margin: 0px;
+        padding: 0px;
+      }
+      #board td {
+        height: 20px;
+        width: 20px;
+        margin: 0px;
+        padding: 0px;
+        border: 1px solid grey;
+      }
+      #board td.player1 {
+        background-color: red;
+      }
+      #board td.player2 {
+        background-color: blue;
+      }
+      #board td.player3 {
+        background-color: yellow;
+      }
+      #board td.player4 {
+        background-color: green;
+      }
+    </style>
+  </head>
   <body>
     <script src="build/bundle.js"></script>
+    <table id="board"></table>
   </body>
 </html>

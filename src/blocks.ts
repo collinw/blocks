@@ -13,6 +13,14 @@ class Matrix {
     }
   }
 
+  Get(m: number, n: number): number {
+    return this.matrix[m][n];
+  }
+
+  Set(m: number, n: number, val: number) {
+    this.matrix[m][n] = val;
+  }
+
   get M(): number {
     return this.matrix.length;
   }

@@ -1,8 +1,14 @@
 import $ from 'jquery';
 
+import * as blocks from './blocks';
+import * as ui from './ui';
+
 function main() {
-  console.log("Running main!");
+  const state = new blocks.GameState();
+
+  state.board.Set(5, 5, 3);
+
+  ui.Draw(state);
 }
 
-console.log("Doing something!");
 $(document).ready(main);

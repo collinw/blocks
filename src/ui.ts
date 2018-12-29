@@ -4,12 +4,12 @@ import * as blocks from './blocks';
 
 export function Draw(state: blocks.GameState) {
   const board = $('#board');
-  console.log("Emitting a grid " + state.board.M + "x" + state.board.N);
-  for (let i = 0; i < state.board.M; i++) {
-    const row = board.append('<div class=\'row\'>');
-    for (let j = 0; j < state.board.N; j++) {
-      row.append('<div style=\'color: green\'></div>');
+  for (let m = 0; m < state.board.M; m++) {
+    const row = $('<tr></tr>');
+    for (let n = 0; n < state.board.N; n++) {
+      const val = state.board.Get(m, n);
+      row.append('<td class="player' + val + '"></td>');
     }
-    board.append('</div>');
+    board.append(row);
   }
 }
