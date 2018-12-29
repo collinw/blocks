@@ -1,8 +1,11 @@
 <html>
   <head>
     <style>
+      #game {
+        width: 600px;
+      }
       #board {
-        font-family: 'monospace';
+        float: left;
         text-align: center;
         border: 1px solid black;
         border-spacing: 0px;
@@ -30,10 +33,35 @@
       #board td.player4 {
         background-color: green;
       }
+      #scores {
+        float: right;
+        width: 100px;
+        border: 2px solid grey;
+      }
     </style>
   </head>
   <body>
     <script src="build/bundle.js"></script>
-    <table id="board"></table>
+    <div id="game">
+      <table id="board"></table>
+      <table id="scores">
+        <tr>
+          <td class="player-label">Player 1</td>
+          <td id="player-score-1"></td>
+        </tr>
+        <tr>
+          <td class="player-label">Player 2</td>
+          <td id="player-score-2"></td>
+        </tr>
+        <tr>
+          <td class="player-label">Player 3</td>
+          <td id="player-score-3"></td>
+        </tr>
+        <tr>
+          <td class="player-label">Player 4</td>
+          <td id="player-score-4"></td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>

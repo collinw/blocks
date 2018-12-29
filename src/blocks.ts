@@ -36,3 +36,21 @@ export class GameState {
     this.board = new Matrix(20, 20);
   }
 }
+
+type Scores = { [id: number] : number; };
+
+// TODO: implement "placed all your pieces" and "played single square last"
+// scoring.
+export function GetScores(state: GameState): Scores {
+  const scores: Scores = {1: 0, 2: 0, 3: 0, 4: 0};
+
+  for (let m = 0; m < state.board.M; m++) {
+    for (let n = 0; n < state.board.N; n++) {
+      const val = state.board.Get(m, n);
+      if (val > 0) {
+        scores[val]++;
+      }
+    }
+  }
+  return scores;
+}

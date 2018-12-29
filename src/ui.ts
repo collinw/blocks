@@ -12,4 +12,10 @@ export function Draw(state: blocks.GameState) {
     }
     board.append(row);
   }
+
+  const scores = blocks.GetScores(state);
+  for (let i = 1; i <= 4; i++) {
+    const elem = $("#player-score-" + i);
+    elem.text(scores[i]);
+  }
 }
