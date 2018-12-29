@@ -154,8 +154,8 @@ export class CoordSet {
 //
 // Coordinates are guaranteed to be in-range on the game board.
 class PlayerInputs {
-  startPoints: CoordSet;
-  exclude: CoordSet;
+  readonly startPoints: CoordSet;
+  readonly exclude: CoordSet;
 
   constructor(startPoints: CoordSet, exclude: CoordSet) {
     this.startPoints = startPoints;
