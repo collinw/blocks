@@ -7,9 +7,6 @@ function CellId(m: number, n: number): string {
 }
 
 function DrawBoard(state: blocks.GameState) {
-  const board = $('#board');
-  board.empty();
-
   // Appending a single string to the jQuery object is much, much faster
   // than manipulating a bunch of intermediate objects.
   const rows = [];
@@ -22,28 +19,35 @@ function DrawBoard(state: blocks.GameState) {
     row.push('</tr>');
     rows.push(row.join(''));
   }
-  board.append(rows.join(''));
+
+  const board = $('#board');
+  board.html(rows.join(''));
 }
 
 function DrawRemainingPieces(player: blocks.Player) {
-  const playerUI = $('#pieces-player' + player.id);
-  playerUI.empty();
-
+  // Appending a single string to the jQuery object is much, much faster
+  // than manipulating a bunch of intermediate objects.
+  const pieces = [];
   for (const piece of player.pieces) {
-    const pieceUI = $('<table class=\'piece\'></table>');
+    const table = ['<table class=\'piece\'>'];
     for (let m = 0; m < piece.canonical.M; m++) {
-      const row = $('<tr></tr>');
+      const row = ['<tr>'];
       for (let n = 0; n < piece.canonical.N; n++) {
-        const cell = $('<td></td>');
         if (piece.canonical.Get(m, n) > 0) {
-          cell.addClass('piece-unit');
+          row.push('<td class="piece-unit"></td>');
+        } else {
+          row.push('<td></td>');
         }
-        row.append(cell);
       }
-      pieceUI.append(row);
+      row.push('</tr>');
+      table.push(row.join(''));
     }
-    playerUI.append(pieceUI);
+    table.push('</table>');
+    pieces.push(table.join(''));
   }
+
+  const playerUI = $('#pieces-player' + player.id);
+  playerUI.html(pieces.join(''));
 }
 
 function DrawPlayerTable(state: blocks.GameState) {
