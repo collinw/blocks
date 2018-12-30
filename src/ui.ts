@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import * as blocks from './blocks';
+import * as pieces from './pieces';
 
 function CellId(m: number, n: number): string {
   return 'cell' + m + 'x' + n;
@@ -24,26 +25,30 @@ function DrawBoard(state: blocks.GameState) {
   board.html(rows.join(''));
 }
 
+function DrawPiece(piece: pieces.Piece): string {
+  const table = ['<table class=\'piece\'>'];
+  for (let m = 0; m < piece.canonical.M; m++) {
+    const row = ['<tr>'];
+    for (let n = 0; n < piece.canonical.N; n++) {
+      if (piece.canonical.Get(m, n) > 0) {
+        row.push('<td class="piece-unit"></td>');
+      } else {
+        row.push('<td></td>');
+      }
+    }
+    row.push('</tr>');
+    table.push(row.join(''));
+  }
+  table.push('</table>');
+  return table.join('');
+}
+
 function DrawRemainingPieces(player: blocks.Player) {
   // Appending a single string to the jQuery object is much, much faster
   // than manipulating a bunch of intermediate objects.
   const pieces = [];
   for (const piece of player.pieces) {
-    const table = ['<table class=\'piece\'>'];
-    for (let m = 0; m < piece.canonical.M; m++) {
-      const row = ['<tr>'];
-      for (let n = 0; n < piece.canonical.N; n++) {
-        if (piece.canonical.Get(m, n) > 0) {
-          row.push('<td class="piece-unit"></td>');
-        } else {
-          row.push('<td></td>');
-        }
-      }
-      row.push('</tr>');
-      table.push(row.join(''));
-    }
-    table.push('</table>');
-    pieces.push(table.join(''));
+    pieces.push(DrawPiece(piece));
   }
 
   const playerUI = $('#pieces-player' + player.id);
