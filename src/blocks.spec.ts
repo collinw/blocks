@@ -2,10 +2,12 @@ import * as blocks from './blocks';
 import { assert, expect } from 'chai';
 import 'mocha';
 
+const kNoPlayers: blocks.Player[] = [];
+
 describe('GameState', () => {
 
   it('should validate cooordinates', () => {
-    const state = new blocks.GameState();
+    const state = new blocks.GameState(kNoPlayers);
     assert(state.board.M === 20);
     assert(state.board.N === 20);
 
@@ -29,7 +31,7 @@ describe('GetPlayerInputs', () => {
   it('should work', () => {
     // Deliberately position both players on the edge of the board so that we verify
     // no off-the-board positions are generated.
-    const state = new blocks.GameState();
+    const state = new blocks.GameState(kNoPlayers);
     state.board.Set(0, 1, 2);
     state.board.Set(0, 0, 3);
 

@@ -7,28 +7,36 @@
 // - Each player keeps track of their pieces remaining and the sequences of
 //   moves they have made so far.
 
+import * as pieces from './pieces';
 import * as util from './util';
 
 const kMaxPieces = 21;
 
 export class Player {
   moves: util.Matrix[];
-  pieces: util.Matrix[];
+  pieces: pieces.Piece[];
 
-  constructor() {
+  constructor(ps: pieces.Piece[]) {
     this.moves = [];
-    this.pieces = [];
+    this.pieces = ps;
   }
+}
+
+export function MakePlayers(ps: pieces.Piece[]): Player[] {
+  const players = [];
+  for (let i = 0; i < 4; i++) {
+    players.push(new Player(ps));
+  }
+  return players;
 }
 
 export class GameState {
   board: util.Matrix;
-  players: Array<Player|null>;
+  players: Player[];
 
-  constructor() {
-    this.board = new util.Matrix(20, 20);
-    // The leading null allows us to look up Player objects by ID.
-    this.players = [null, new Player(), new Player(), new Player(), new Player()];
+  constructor(players: Player[]) {
+    this.board = util.Matrix.Zero(20, 20);
+    this.players = players;
   }
 
   GetValidCoords(x: Iterable<Coord>): CoordSet {

@@ -1,16 +1,30 @@
 export class Matrix {
   private matrix: number[][];
 
-  constructor(m: number, n: number) {
+  constructor(data: number[][]) {
     this.matrix = [];
 
-    for (let i = 0; i < m; i++) {
-      const row = [];
-      for (let j = 0; j < n; j++) {
-        row.push(0);
+    if (data.length > 0) {
+      const m = data.length;
+      const n = data[0].length;
+
+      for (let i = 0; i < m; i++) {
+        const row = [];
+        for (let j = 0; j < n; j++) {
+          row.push(data[i][j]);
+        }
+        this.matrix.push(row);
       }
-      this.matrix.push(row);
     }
+  }
+
+  static Zero(m: number, n: number) {
+    const data = [];
+    for (let i = 0; i < m; i++) {
+      data.push(new Array(n).fill(0));
+    }
+
+    return new Matrix(data);
   }
 
   Get(m: number, n: number): number {
@@ -26,14 +40,33 @@ export class Matrix {
   }
 
   get N(): number {
+    if (this.M === 0) {
+      return 0;
+    }
     return this.matrix[0].length;
+  }
+
+  Flip(): Matrix {
+    return new Matrix(this.matrix.reverse());
+  }
+
+  RotateClockwise(): Matrix {
+    const rotated = Matrix.Zero(this.N, this.M);
+
+    for (let m = 0; m < this.M; m++) {
+      for (let n = 0; n < this.N; n++) {
+        const val = this.Get(m, n);
+        rotated.Set(n, this.M - m - 1, val);
+      }
+    }
+    return rotated;
   }
 }
 
 // The ES6 Set type uses === to compare objects, so it doesn't consider
 // [4, 4] and [4, 4] to be the same. Blergh.
 export class DeepSet<T> {
-  private data: { [key: string]: T };
+  private data: {[key: string]: T};
 
   constructor(data: Iterable<T>) {
     this.data = {};
@@ -68,13 +101,13 @@ export class DeepSet<T> {
     return diff;
   }
 
-  *[Symbol.iterator]() {
+  * [Symbol.iterator]() {
     for (const x of this.Values()) {
       yield x;
     }
   }
 
   toString(): string {
-    return Array.from(this.Values()).join(", ");
+    return Array.from(this.Values()).join(', ');
   }
 }
