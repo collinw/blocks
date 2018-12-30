@@ -19,11 +19,6 @@ export function Draw(state: blocks.GameState) {
     board.append(row);
   }
 
-  const inputs = blocks.GetPlayerInputs(state, 3);
-  for (const coord of inputs.startPoints) {
-    $('#' + CellId(coord[0], coord[1])).text('x');
-  }
-
   const scores = blocks.GetScores(state);
   for (let i = 1; i <= 4; i++) {
     const elem = $('#player-score-' + i);
@@ -31,11 +26,16 @@ export function Draw(state: blocks.GameState) {
   }
 
   for (let i = 0; i < 4; i++) {
-    const playerUI = $('#pieces-player' + (i + 1));
+    const player = state.players[i];
+
+    const inputs = blocks.GetPlayerInputs(state, player.id);
+    for (const coord of inputs.startPoints) {
+      $('#' + CellId(coord[0], coord[1])).text('x');
+    }
+
+    const playerUI = $('#pieces-player' + player.id);
     playerUI.empty();
 
-    const player = state.players[i];
-    console.log(player.pieces.length);
     for (const piece of player.pieces) {
       const pieceUI = $('<table class=\'piece\'></table>');
       for (let m = 0; m < piece.canonical.M; m++) {

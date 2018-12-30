@@ -52,6 +52,33 @@ describe('DeepSet', () => {
     result = set.Difference(new CoordSet([3, 4]));
     expect(result).to.deep.equal(new CoordSet([1, 2]));
   });
+
+  it('should intersect sets', () => {
+    // Both sets are empty.
+    let set = new CoordSet();
+    let result = set.Intersection(new CoordSet());
+    expect(result).to.deep.equal(new CoordSet());
+
+    // The other set is empty.
+    set = new CoordSet([1, 2], [3, 4]);
+    result = set.Intersection(new CoordSet());
+    expect(result).to.deep.equal(new CoordSet());
+
+    // This set is empty, the other set has values.
+    set = new CoordSet();
+    result = set.Intersection(new CoordSet([1, 2], [3, 4]));
+    expect(result).to.deep.equal(new CoordSet());
+
+    // Both sets have values, but they are disjoint.
+    set = new CoordSet([1, 2], [3, 4]);
+    result = set.Intersection(new CoordSet([5, 6]));
+    expect(result).to.deep.equal(new CoordSet());
+
+    // Both sets have values, but they have a non-null intersection.
+    set = new CoordSet([1, 2], [3, 4]);
+    result = set.Intersection(new CoordSet([3, 4]));
+    expect(result).to.deep.equal(new CoordSet([3, 4]));
+  });
 });
 
 describe('Matrix', () => {

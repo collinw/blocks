@@ -10,24 +10,43 @@
 import * as pieces from './pieces';
 import * as util from './util';
 
-const kMaxPieces = 21;
+export class GiveUp {}
 
-export class Player {
-  moves: util.Matrix[];
-  pieces: pieces.Piece[];
+export class Move {
+  // A reference to the specific piece being placed on the board. Used to
+  // manage player state (e.g., which pieces have been used).
+  piece: pieces.Piece;
+  // The specific set of cells we want to occupy with this piece.
+  cells: CoordSet;
 
-  constructor(ps: pieces.Piece[]) {
-    this.moves = [];
-    this.pieces = ps;
+  constructor(piece: pieces.Piece, cells: CoordSet) {
+    this.piece = piece;
+    this.cells = cells;
   }
 }
 
-export function MakePlayers(ps: pieces.Piece[]): Player[] {
-  const players = [];
-  for (let i = 0; i < 4; i++) {
-    players.push(new Player(ps));
+export interface Agent {
+  MakeMove(inputs: PlayerInputs, ps: pieces.Piece[]): Move|GiveUp;
+}
+
+export class Player {
+  id: number;
+  agent: Agent;
+  moves: util.Matrix[];
+  pieces: pieces.Piece[];
+  stillPlaying: boolean;
+
+  constructor(id: number, agent: Agent, ps: pieces.Piece[]) {
+    this.id = id;
+    this.agent = agent;
+    this.pieces = ps;
+    this.moves = [];
+    this.stillPlaying = true;
   }
-  return players;
+
+  MakeMove(inputs: PlayerInputs): Move|GiveUp {
+    return this.agent.MakeMove(inputs, this.pieces);
+  }
 }
 
 export class GameState {
@@ -39,18 +58,20 @@ export class GameState {
     this.players = players;
   }
 
-  GetValidCoords(x: Iterable<Coord>): CoordSet {
-    const valid = new CoordSet();
-    for (const coord of x) {
-      if (coord[0] < 0 || coord[0] >= this.board.M) {
-        continue;
-      }
-      if (coord[1] < 0 || coord[1] >= this.board.N) {
-        continue;
-      }
-      valid.Add(coord);
+  ApplyMove(player: Player, move: Move) {
+    const idx = player.pieces.indexOf(move.piece);
+    if (idx === -1) {
+      throw new Error('Piece is not present in the list!');
     }
-    return valid;
+    player.pieces.splice(idx, 1);
+
+    for (const cell of move.cells) {
+      this.board.Set(cell[0], cell[1], player.id);
+    }
+  }
+
+  GiveUp(player: Player) {
+    player.stillPlaying = false;
   }
 }
 
@@ -84,18 +105,46 @@ export class CoordSet extends util.DeepSet<Coord> {
   }
 }
 
+export function GetValidCoords(x: Iterable<Coord>): CoordSet {
+  const valid = new CoordSet();
+  for (const coord of x) {
+    if (coord[0] < 0 || coord[0] >= 20) {
+      continue;
+    }
+    if (coord[1] < 0 || coord[1] >= 20) {
+      continue;
+    }
+    valid.Add(coord);
+  }
+  return valid;
+}
+
 // In order to make decisions about their next moves, players need to know
 // which squares are open starting points and which squares are taken or
 // otherwise invalid.
 //
 // Coordinates are guaranteed to be in-range on the game board.
-class PlayerInputs {
+export class PlayerInputs {
   readonly startPoints: CoordSet;
   readonly exclude: CoordSet;
 
   constructor(startPoints: CoordSet, exclude: CoordSet) {
     this.startPoints = startPoints;
     this.exclude = exclude;
+  }
+
+  // Helper method to figure out if a proposed move is valid.
+  // - All cells in the proposed move must be on the board.
+  // - All cells in the proposed move must not be illegal.
+  ValidateMove(cells: CoordSet): string|null {
+    const inRange = GetValidCoords(cells);
+    if (inRange.Size() !== cells.Size()) {
+      return 'Coordinates fall off the board';
+    }
+    if (cells.Intersection(this.exclude).Size() > 0) {
+      return 'Coordinates are illegal';
+    }
+    return null;
   }
 }
 
@@ -127,5 +176,5 @@ export function GetPlayerInputs(state: GameState, player: number): PlayerInputs 
   }
   const startPoints = valid.Difference(exclude);
 
-  return new PlayerInputs(state.GetValidCoords(startPoints), state.GetValidCoords(exclude));
+  return new PlayerInputs(GetValidCoords(startPoints), GetValidCoords(exclude));
 }

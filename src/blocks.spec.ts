@@ -7,11 +7,7 @@ const kNoPlayers: blocks.Player[] = [];
 describe('GameState', () => {
 
   it('should validate cooordinates', () => {
-    const state = new blocks.GameState(kNoPlayers);
-    assert(state.board.M === 20);
-    assert(state.board.N === 20);
-
-    const result = state.GetValidCoords([
+    const result = blocks.GetValidCoords([
       // Valid.
       [0, 0],
       [5, 8],
