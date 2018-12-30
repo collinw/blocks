@@ -65,22 +65,27 @@ export class PieceForm extends util.Matrix {
   }
 }
 
+export class PieceFormSet extends util.MatrixSet {
+  constructor(data: Iterable<PieceForm>) {
+    super(data);
+  }
+}
+
 // Pieces are represented in a canonical form with multiple variants,
 // each corresponding to a way of rotating/flipping the canonical form.
 // We generate these once and use them throughout in order to simplify
 // the process of calculating possible moves.
 export class Piece {
   readonly canonical: PieceForm;
-  readonly variants: PieceForm[];
+  readonly variants: PieceFormSet;
 
-  constructor(canonical: PieceForm, variants: PieceForm[]) {
+  constructor(canonical: PieceForm, variants: PieceFormSet) {
     this.canonical = canonical;
     this.variants = variants;
   }
 }
 
-// TODO: variants are currently not deduplicated.
-export function GenerateVariants(canonical: PieceForm): PieceForm[] {
+export function GenerateVariants(canonical: PieceForm): PieceFormSet {
   const variants = [canonical];
 
   for (let i = 0; i < 3; i++) {
@@ -90,7 +95,7 @@ export function GenerateVariants(canonical: PieceForm): PieceForm[] {
   for (let i = 0; i < 4; i++) {
     variants.push(variants[i].Flip());
   }
-  return variants;
+  return new PieceFormSet(variants);
 }
 
 export function GetPieces(): Piece[] {

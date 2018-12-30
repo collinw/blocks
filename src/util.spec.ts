@@ -87,14 +87,17 @@ describe('Matrix', () => {
     let mat = util.Matrix.Zero(0, 0);
     expect(mat.M).to.equal(0);
     expect(mat.N).to.equal(0);
+    expect(mat.toString()).to.equal("[]");
 
     mat = util.Matrix.Zero(1, 0);
     expect(mat.M).to.equal(1);
     expect(mat.N).to.equal(0);
+    expect(mat.toString()).to.equal("[[]]");
 
     mat = util.Matrix.Zero(3, 2);
     expect(mat.M).to.equal(3);
     expect(mat.N).to.equal(2);
+    expect(mat.toString()).to.equal("[[0, 0], [0, 0], [0, 0]]");
 
     for (let m = 0; m < mat.M; m++) {
       for (let n = 0; n < mat.N; n++) {
@@ -107,14 +110,17 @@ describe('Matrix', () => {
     let mat = new util.Matrix([]);
     expect(mat.M).to.equal(0);
     expect(mat.N).to.equal(0);
+    expect(mat.toString()).to.equal("[]");
 
     mat = new util.Matrix([[]]);
     expect(mat.M).to.equal(1);
     expect(mat.N).to.equal(0);
+    expect(mat.toString()).to.equal("[[]]");
 
     mat = new util.Matrix([[1, 2], [3, 4], [5, 6]]);
     expect(mat.M).to.equal(3);
     expect(mat.N).to.equal(2);
+    expect(mat.toString()).to.equal("[[1, 2], [3, 4], [5, 6]]");
 
     expect(mat.Get(0, 0)).to.equal(1);
     expect(mat.Get(0, 1)).to.equal(2);
@@ -193,5 +199,17 @@ describe('Matrix', () => {
        [2],
        [3],
        [4]]));
+  });
+});
+
+describe('MatrixSet', () => {
+
+  it('actually works as a set', () => {
+    const ms = new util.MatrixSet([]);
+    ms.Add(util.Matrix.Zero(2, 2));
+    ms.Add(util.Matrix.Zero(2, 2));
+    ms.Add(util.Matrix.Zero(4, 4));
+
+    expect(ms.Size()).to.equal(2);
   });
 });

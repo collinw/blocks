@@ -7,7 +7,7 @@ export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
   const roots = new blocks.CoordSet();
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
-      if (pieceForm.Get(m, n) > 0) {
+      if (pieceForm.Get(m, n) === 1) {
         roots.Add([m, n]);
       }
     }
@@ -33,11 +33,13 @@ export function GenerateMove(
 
 export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move[] {
   const valid = [];
+  let evals = 0;
 
   for (const start of inputs.startPoints) {
     for (const piece of ps) {
       for (const variant of piece.variants) {
         for (const root of GetRoots(variant)) {
+          evals++;
           const cells = GenerateMove(start, root, variant);
           const rejection = inputs.ValidateMove(cells);
           if (rejection) {
@@ -48,13 +50,13 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece
       }
     }
   }
+  console.log('Evaluated ' + evals + ' possible moves, pruned to ' + valid.length);
   return valid;
 }
 
 export class RandomAgent implements blocks.Agent {
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
     const valid = GenerateValidMoves(inputs, ps);
-    console.log('Considering ' + valid.length + ' potential moves');
     if (valid.length === 0) {
       return new blocks.GiveUp();
     }

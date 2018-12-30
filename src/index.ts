@@ -64,7 +64,12 @@ function Main() {
   const players = MakePlayers();
   const state = new blocks.GameState(players);
 
-  const keepGoing = FirstRound(state);
+  console.log('Round 1');
+  let keepGoing = FirstRound(state);
+  ui.Draw(state);
+
+  console.log('Round 2');
+  keepGoing = PlayRound(state);
   ui.Draw(state);
 }
 

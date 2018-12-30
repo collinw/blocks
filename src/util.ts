@@ -61,6 +61,14 @@ export class Matrix {
     }
     return rotated;
   }
+
+  toString(): string {
+    const rows = [];
+    for (let m = 0; m < this.M; m++) {
+      rows.push('[' + this.matrix[m].join(', ') + ']');
+    }
+    return '[' + rows.join(', ') + ']';
+  }
 }
 
 // The ES6 Set type uses === to compare objects, so it doesn't consider
@@ -119,5 +127,11 @@ export class DeepSet<T> {
 
   toString(): string {
     return Array.from(this.Values()).join(', ');
+  }
+}
+
+export class MatrixSet extends DeepSet<Matrix> {
+  constructor(data: Iterable<Matrix>) {
+    super(data);
   }
 }
