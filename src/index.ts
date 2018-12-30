@@ -5,10 +5,18 @@ import * as blocks from './blocks';
 import * as pieces from './pieces';
 import * as ui from './ui';
 
+// Make it easy to swap out agents while testing.
+const kAgents = [
+  new agent.RandomAgent(),
+  new agent.RandomAgent(),
+  new agent.RandomAgent(),
+  new agent.RandomAgent(),
+];
+
 function MakePlayers(): blocks.Player[] {
   const players = [];
   for (let i = 0; i < 4; i++) {
-    players.push(new blocks.Player(i + 1, new agent.RandomAgent(), pieces.GetPieces()));
+    players.push(new blocks.Player(i + 1, kAgents[i], pieces.GetPieces()));
   }
   return players;
 }

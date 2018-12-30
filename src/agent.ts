@@ -54,6 +54,18 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece
   return valid;
 }
 
+// An agent that gives up immediately. Used for testing.
+export class QuitterAgent implements blocks.Agent {
+  MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
+    return new blocks.GiveUp();
+  }
+
+  Description(): string {
+    return "Quitter";
+  }
+}
+
+// An agent that generates all possible valid moves, then picks one at random.
 export class RandomAgent implements blocks.Agent {
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
     const valid = GenerateValidMoves(inputs, ps);
