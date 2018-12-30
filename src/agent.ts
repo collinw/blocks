@@ -16,9 +16,9 @@ export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
 }
 
 export function GenerateMove(
-    origin: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.CoordSet {
-  const mOffset = origin[0] - root[0];
-  const nOffset = origin[1] - root[1];
+    start: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.CoordSet {
+  const mOffset = start[0] - root[0];
+  const nOffset = start[1] - root[1];
 
   const cells = new blocks.CoordSet();
   for (let m = 0; m < pieceForm.M; m++) {
