@@ -83,6 +83,10 @@ export class Piece {
     this.canonical = canonical;
     this.variants = variants;
   }
+
+  IsSingleSquare(): boolean {
+    return this.canonical.M === 1 && this.canonical.N === 1;
+  }
 }
 
 export function GenerateVariants(canonical: PieceForm): PieceFormSet {

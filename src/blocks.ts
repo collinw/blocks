@@ -23,6 +23,10 @@ export class Move {
     this.piece = piece;
     this.cells = cells;
   }
+
+  IsSingleSquare(): boolean {
+    return this.piece.IsSingleSquare();
+  }
 }
 
 export interface Agent {
@@ -34,7 +38,7 @@ export interface Agent {
 export class Player {
   id: number;
   agent: Agent;
-  moves: util.Matrix[];
+  moves: Move[];
   pieces: pieces.Piece[];
   stillPlaying: boolean;
 
@@ -66,6 +70,7 @@ export class GameState {
       throw new Error('Piece is not present in the list!');
     }
     player.pieces.splice(idx, 1);
+    player.moves.push(move);
 
     for (const cell of move.cells) {
       this.board.Set(cell[0], cell[1], player.id);
@@ -81,8 +86,6 @@ type Scores = {
   [id: number]: number;
 };
 
-// TODO: implement "placed all your pieces" and "played single square last"
-// scoring.
 export function GetScores(state: GameState): Scores {
   const scores: Scores = {1: 0, 2: 0, 3: 0, 4: 0};
 
@@ -91,6 +94,18 @@ export function GetScores(state: GameState): Scores {
       const val = state.board.Get(m, n);
       if (val > 0) {
         scores[val]++;
+      }
+    }
+  }
+
+  // You get a bonus for playing all your pieces.
+  for (const player of state.players) {
+    if (player.pieces.length === 0) {
+      scores[player.id] += 15;
+      // You get a further bonus if the single square was the last piece you played.
+      const lastMove = player.moves[player.moves.length - 1];
+      if (lastMove.IsSingleSquare()) {
+        scores[player.id] += 5;
       }
     }
   }
