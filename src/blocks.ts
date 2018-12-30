@@ -156,16 +156,24 @@ export class PlayerInputs {
     this.exclude = exclude;
   }
 
+  ValidateCoord(coord: Coord): string|null {
+    if (!IsCoordValid(coord)) {
+      return 'Coordinate falls off the board';
+    }
+    if (this.exclude.Has(coord)) {
+      return 'Coordinate is illegal';
+    }
+    return null;
+  }
+
   // Helper method to figure out if a proposed move is valid.
   // - All cells in the proposed move must be on the board.
   // - All cells in the proposed move must not be illegal.
-  ValidateMove(cells: CoordSet): string|null {
+  ValidateMove(cells: Iterable<Coord>): string|null {
     for (const coord of cells) {
-      if (!IsCoordValid(coord)) {
-        return 'Coordinates fall off the board';
-      }
-      if (this.exclude.Has(coord)) {
-        return 'Coordinates are illegal';
+      const rejection = this.ValidateCoord(coord);
+      if (rejection) {
+        return rejection;
       }
     }
     return null;
