@@ -5,18 +5,26 @@ import * as blocks from './blocks';
 import * as pieces from './pieces';
 import * as ui from './ui';
 
-// Make it easy to swap out agents while testing.
-const kAgents = [
-  new agent.RandomAgent(),
-  new agent.GreedyAgent(),
-  new agent.RandomAgent(),
-  new agent.GreedyAgent(),
-];
+function ShuffleArray<T>(array: T[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
 function MakePlayers(): blocks.Player[] {
+  // Make it easy to swap out agents while testing.
+  const agents = [
+    new agent.RandomAgent(),
+    new agent.RandomAgent(),
+    new agent.GreedyAgent(),
+    new agent.RandomAgent(),
+  ];
+  ShuffleArray(agents);
+
   const players = [];
   for (let i = 0; i < 4; i++) {
-    players.push(new blocks.Player(i + 1, kAgents[i], pieces.GetPieces()));
+    players.push(new blocks.Player(i + 1, agents[i], pieces.GetPieces()));
   }
   return players;
 }
