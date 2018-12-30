@@ -122,16 +122,22 @@ export class CoordSet extends util.DeepSet<Coord> {
   }
 }
 
+export function IsCoordValid(c: Coord): boolean {
+  if (c[0] < 0 || c[0] >= 20) {
+    return false;
+  }
+  if (c[1] < 0 || c[1] >= 20) {
+    return false;
+  }
+  return true;
+}
+
 export function GetValidCoords(x: Iterable<Coord>): CoordSet {
   const valid = new CoordSet();
   for (const coord of x) {
-    if (coord[0] < 0 || coord[0] >= 20) {
-      continue;
+    if (IsCoordValid(coord)) {
+      valid.Add(coord);
     }
-    if (coord[1] < 0 || coord[1] >= 20) {
-      continue;
-    }
-    valid.Add(coord);
   }
   return valid;
 }
@@ -153,13 +159,16 @@ export class PlayerInputs {
   // Helper method to figure out if a proposed move is valid.
   // - All cells in the proposed move must be on the board.
   // - All cells in the proposed move must not be illegal.
+  //
+  // Currently accounts for ~35% of CPU.
   ValidateMove(cells: CoordSet): string|null {
-    const inRange = GetValidCoords(cells);
-    if (inRange.Size() !== cells.Size()) {
-      return 'Coordinates fall off the board';
-    }
-    if (cells.Intersection(this.exclude).Size() > 0) {
-      return 'Coordinates are illegal';
+    for (const coord of cells) {
+      if (!IsCoordValid(coord)) {
+        return 'Coordinates fall off the board';
+      }
+      if (this.exclude.Has(coord)) {
+        return 'Coordinates are illegal';
+      }
     }
     return null;
   }
