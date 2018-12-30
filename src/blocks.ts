@@ -159,8 +159,6 @@ export class PlayerInputs {
   // Helper method to figure out if a proposed move is valid.
   // - All cells in the proposed move must be on the board.
   // - All cells in the proposed move must not be illegal.
-  //
-  // Currently accounts for ~35% of CPU.
   ValidateMove(cells: CoordSet): string|null {
     for (const coord of cells) {
       if (!IsCoordValid(coord)) {
