@@ -47,7 +47,7 @@ export class Matrix {
   }
 
   Flip(): Matrix {
-    return new Matrix(this.matrix.reverse());
+    return new Matrix(this.matrix.slice().reverse());
   }
 
   RotateClockwise(): Matrix {

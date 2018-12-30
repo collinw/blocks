@@ -141,15 +141,21 @@ describe('Matrix', () => {
 
     m = new util.Matrix(
       [[1, 2],
-      [3, 4],
-      [5, 6],
-      [7, 8]]);
+       [3, 4],
+       [5, 6],
+       [7, 8]]);
     result = m.Flip();
     expect(result).to.deep.equal(new util.Matrix(
       [[7, 8],
        [5, 6],
        [3, 4],
        [1, 2]]));
+    // Regression test: the original matrix should not have been modified.
+    expect(m).to.deep.equal(new util.Matrix(
+      [[1, 2],
+       [3, 4],
+       [5, 6],
+       [7, 8]]));
   });
 
   it('can rotate clockwise', () => {
