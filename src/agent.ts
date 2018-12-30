@@ -15,6 +15,8 @@ export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
   return roots;
 }
 
+// Conceptually, this returns a set, but an array is faster, and this is a
+// core part of the game.
 export function GenerateMove(
     start: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.Coord[] {
   const mOffset = start[0] - root[0];
@@ -45,7 +47,7 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece
           if (rejection) {
             continue;
           }
-          valid.push(new blocks.Move(piece, new blocks.CoordSet(...cells)));
+          valid.push(new blocks.Move(piece, cells));
         }
       }
     }

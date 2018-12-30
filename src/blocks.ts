@@ -17,9 +17,10 @@ export class Move {
   // manage player state (e.g., which pieces have been used).
   piece: pieces.Piece;
   // The specific set of cells we want to occupy with this piece.
-  cells: CoordSet;
+  // Conceptually, this is a set, but an array is faster.
+  cells: Coord[];
 
-  constructor(piece: pieces.Piece, cells: CoordSet) {
+  constructor(piece: pieces.Piece, cells: Coord[]) {
     this.piece = piece;
     this.cells = cells;
   }
