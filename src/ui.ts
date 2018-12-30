@@ -30,7 +30,10 @@ export function Draw(state: blocks.GameState) {
 
     const inputs = blocks.GetPlayerInputs(state, player.id);
     for (const coord of inputs.startPoints) {
-      $('#' + CellId(coord[0], coord[1])).text('x');
+      const cell = $('#' + CellId(coord[0], coord[1]));
+      cell.addClass('possible-next');
+      cell.addClass('player' + player.id);
+      cell.text('x');
     }
 
     const playerUI = $('#pieces-player' + player.id);

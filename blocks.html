@@ -20,16 +20,19 @@
         padding: 0px;
         border: 1px solid grey;
       }
-      #board td.player1 {
+      .possible-next {
+        opacity: 0.3;
+      }
+      .player1 {
         background-color: red;
       }
-      #board td.player2 {
+      .player2 {
         background-color: blue;
       }
-      #board td.player3 {
-        background-color: yellow;
+      .player3 {
+        background-color: gold;
       }
-      #board td.player4 {
+      .player4 {
         background-color: green;
       }
       #pieces-remaining {
@@ -77,22 +80,22 @@
         <th>Pieces Remaining</th>
       </thead>
       <tr>
-        <td>Player 1</td>
+        <td class="player1">Player 1</td>
         <td id="player-score-1" class="player-score"></td>
         <td id="pieces-player1"></td>
       </tr>
       <tr>
-        <td>Player 2</td>
+        <td class="player2">Player 2</td>
         <td id="player-score-2" class="player-score"></td>
         <td id="pieces-player2"></td>
       </tr>
       <tr>
-        <td>Player 3</td>
+        <td class="player3">Player 3</td>
         <td id="player-score-3" class="player-score"></td>
         <td id="pieces-player3"></td>
       </tr>
       <tr>
-        <td>Player 4</td>
+        <td class="player4">Player 4</td>
         <td id="player-score-4" class="player-score"></td>
         <td id="pieces-player4"></td>
       </tr>
