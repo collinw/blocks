@@ -28,6 +28,9 @@ export function Draw(state: blocks.GameState) {
   for (let i = 0; i < 4; i++) {
     const player = state.players[i];
 
+    const desc = player.agent.Description();
+    $(".player" + player.id + " > .player-desc").text(desc);
+
     const inputs = blocks.GetPlayerInputs(state, player.id);
     for (const coord of inputs.startPoints) {
       const cell = $('#' + CellId(coord[0], coord[1]));

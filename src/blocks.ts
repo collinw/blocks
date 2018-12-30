@@ -27,6 +27,8 @@ export class Move {
 
 export interface Agent {
   MakeMove(inputs: PlayerInputs, ps: pieces.Piece[]): Move|GiveUp;
+
+  Description(): string;
 }
 
 export class Player {

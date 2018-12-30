@@ -62,4 +62,8 @@ export class RandomAgent implements blocks.Agent {
     }
     return valid[Math.floor(valid.length * Math.random())];
   }
+
+  Description(): string {
+    return "Random";
+  }
 }
