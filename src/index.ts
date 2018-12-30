@@ -24,14 +24,14 @@ function Play(state: blocks.GameState, player: blocks.Player, input: blocks.Play
     }
     state.ApplyMove(player, decision);
     return true;
-  } else {
-    state.GiveUp(player);
-    return false;
   }
+  console.log("Player " + player.id + " gave up!");
+  state.GiveUp(player);
+  return false;
 }
 
 function PlayRound(state: blocks.GameState): boolean {
-  let keepGoing = true;
+  let keepGoing = false;
   for (let i = 0; i < state.players.length; i++) {
     const player = state.players[i];
     if (!player.stillPlaying) {
@@ -39,25 +39,33 @@ function PlayRound(state: blocks.GameState): boolean {
     }
 
     const input = blocks.GetPlayerInputs(state, player.id);
-    keepGoing = keepGoing && Play(state, player, input);
+    keepGoing = Play(state, player, input) || keepGoing;
   }
   return keepGoing;
 }
 
 function FirstRound(state: blocks.GameState) {
-  let keepGoing = true;
+  let keepGoing = false;
   for (let i = 0; i < state.players.length; i++) {
     const start = kFirstRoundStartingPoints[i];
     const input = new blocks.PlayerInputs(new blocks.CoordSet(start), new blocks.CoordSet());
 
     const player = state.players[i];
-    if (!player.stillPlaying) {
-      continue;
-    }
-
-    keepGoing = keepGoing && Play(state, player, input);
+    keepGoing = Play(state, player, input) || keepGoing;
   }
   return keepGoing;
+}
+
+function PlayAgainUntilDone(state: blocks.GameState) {
+  // Using setTimeout here gives the UI a chance to redraw during the game.
+  setTimeout(() => {
+    console.log('Next round');
+    const keepGoing = PlayRound(state);
+    ui.Draw(state);
+    if (keepGoing) {
+      PlayAgainUntilDone(state);
+    }
+  }, 0);
 }
 
 function Main() {
@@ -65,12 +73,10 @@ function Main() {
   const state = new blocks.GameState(players);
 
   console.log('Round 1');
-  let keepGoing = FirstRound(state);
+  FirstRound(state);
   ui.Draw(state);
 
-  console.log('Round 2');
-  keepGoing = PlayRound(state);
-  ui.Draw(state);
+  PlayAgainUntilDone(state);
 }
 
 $(document).ready(Main);
