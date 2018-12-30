@@ -72,7 +72,6 @@ function DrawPlayerTable(state: blocks.GameState) {
       const cell = $('#' + CellId(coord[0], coord[1]));
       cell.addClass('possible-next');
       cell.addClass('player' + player.id);
-      cell.text('x');
     }
 
     DrawRemainingPieces(player);
