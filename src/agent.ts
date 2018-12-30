@@ -16,15 +16,15 @@ export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
 }
 
 export function GenerateMove(
-    start: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.CoordSet {
+    start: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.Coord[] {
   const mOffset = start[0] - root[0];
   const nOffset = start[1] - root[1];
 
-  const cells = new blocks.CoordSet();
+  const cells : blocks.Coord[] = [];
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
       if (pieceForm.Get(m, n) > 0) {
-        cells.Add([m + mOffset, n + nOffset]);
+        cells.push([m + mOffset, n + nOffset]);
       }
     }
   }
@@ -45,7 +45,7 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece
           if (rejection) {
             continue;
           }
-          valid.push(new blocks.Move(piece, cells));
+          valid.push(new blocks.Move(piece, new blocks.CoordSet(...cells)));
         }
       }
     }
