@@ -10,14 +10,19 @@ function DrawBoard(state: blocks.GameState) {
   const board = $('#board');
   board.empty();
 
+  // Appending a single string to the jQuery object is much, much faster
+  // than manipulating a bunch of intermediate objects.
+  const rows = [];
   for (let m = 0; m < state.board.M; m++) {
-    const row = $('<tr></tr>');
+    const row = ['<tr>'];
     for (let n = 0; n < state.board.N; n++) {
       const val = state.board.Get(m, n);
-      row.append('<td id="' + CellId(m, n) + '" class="player' + val + '"></td>');
+      row.push('<td id="' + CellId(m, n) + '" class="player' + val + '"></td>');
     }
-    board.append(row);
+    row.push('</tr>');
+    rows.push(row.join(''));
   }
+  board.append(rows.join(''));
 }
 
 function DrawRemainingPieces(player: blocks.Player) {
