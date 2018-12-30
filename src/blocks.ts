@@ -7,43 +7,13 @@
 // - Each player keeps track of their pieces remaining and the sequences of
 //   moves they have made so far.
 
-class Matrix {
-  private matrix: number[][];
-
-  constructor(m: number, n: number) {
-    this.matrix = [];
-
-    for (let i = 0; i < m; i++) {
-      const row = [];
-      for (let j = 0; j < n; j++) {
-        row.push(0);
-      }
-      this.matrix.push(row);
-    }
-  }
-
-  Get(m: number, n: number): number {
-    return this.matrix[m][n];
-  }
-
-  Set(m: number, n: number, val: number) {
-    this.matrix[m][n] = val;
-  }
-
-  get M(): number {
-    return this.matrix.length;
-  }
-
-  get N(): number {
-    return this.matrix[0].length;
-  }
-}
+import * as util from './util';
 
 const kMaxPieces = 21;
 
 export class Player {
-  moves: Matrix[];
-  pieces: Matrix[];
+  moves: util.Matrix[];
+  pieces: util.Matrix[];
 
   constructor() {
     this.moves = [];
@@ -52,11 +22,11 @@ export class Player {
 }
 
 export class GameState {
-  board: Matrix;
+  board: util.Matrix;
   players: Array<Player|null>;
 
   constructor() {
-    this.board = new Matrix(20, 20);
+    this.board = new util.Matrix(20, 20);
     // The leading null allows us to look up Player objects by ID.
     this.players = [null, new Player(), new Player(), new Player(), new Player()];
   }
@@ -99,52 +69,10 @@ export function GetScores(state: GameState): Scores {
 // Coords are (m, n) coordinate pairs.
 export type Coord = [number, number];
 
-// The ES6 Set type uses === to compare objects, so it doesn't consider
-// [4, 4] and [4, 4] to be the same. Blergh.
-export class CoordSet {
-  private data: { [key: string]: Coord };
-
+// A set of Coord objects.
+export class CoordSet extends util.DeepSet<Coord> {
   constructor(...data: Coord[]) {
-    this.data = {};
-    for (const x of data) {
-      this.Add(x);
-    }
-  }
-
-  Size(): number {
-    return this.Values().length;
-  }
-
-  Add(x: Coord) {
-    this.data[x.toString()] = x;
-  }
-
-  Has(x: Coord): boolean {
-    return this.data[x.toString()] !== undefined;
-  }
-
-  Values(): Coord[] {
-    return Object.values(this.data);
-  }
-
-  Difference(t: CoordSet): CoordSet {
-    const diff = new CoordSet();
-    for (const x of this.Values()) {
-      if (!t.Has(x)) {
-        diff.Add(x);
-      }
-    }
-    return diff;
-  }
-
-  *[Symbol.iterator]() {
-    for (const x of this.Values()) {
-      yield x;
-    }
-  }
-
-  toString(): string {
-    return Array.from(this.Values()).join(", ");
+    super(data);
   }
 }
 
