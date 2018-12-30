@@ -26,6 +26,8 @@ function DrawBoard(state: blocks.GameState) {
 }
 
 function DrawPiece(piece: pieces.Piece): string {
+  // Appending a single string to the jQuery object is much, much faster
+  // than manipulating a bunch of intermediate objects.
   const table = ['<table class=\'piece\'>'];
   for (let m = 0; m < piece.canonical.M; m++) {
     const row = ['<tr>'];
@@ -44,8 +46,6 @@ function DrawPiece(piece: pieces.Piece): string {
 }
 
 function DrawRemainingPieces(player: blocks.Player) {
-  // Appending a single string to the jQuery object is much, much faster
-  // than manipulating a bunch of intermediate objects.
   const pieces = [];
   for (const piece of player.pieces) {
     pieces.push(DrawPiece(piece));
