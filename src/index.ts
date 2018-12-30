@@ -8,9 +8,9 @@ import * as ui from './ui';
 // Make it easy to swap out agents while testing.
 const kAgents = [
   new agent.RandomAgent(),
+  new agent.GreedyAgent(),
   new agent.RandomAgent(),
-  new agent.RandomAgent(),
-  new agent.RandomAgent(),
+  new agent.GreedyAgent(),
 ];
 
 function MakePlayers(): blocks.Player[] {

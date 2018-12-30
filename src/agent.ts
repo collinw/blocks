@@ -79,3 +79,22 @@ export class RandomAgent implements blocks.Agent {
     return "Random";
   }
 }
+
+// An agent that tries to place the biggest pieces first.
+export class GreedyAgent implements blocks.Agent {
+  MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
+    ps = ps.sort((p1, p2) => p2.canonical.M * p2.canonical.N - p1.canonical.M * p1.canonical.N);
+
+    for (const piece of ps) {
+      const valid = GenerateValidMoves(inputs, [piece]);
+      if (valid.length > 0) {
+        return valid[Math.floor(valid.length * Math.random())];
+      }
+    }
+    return new blocks.GiveUp();
+  }
+
+  Description(): string {
+    return "Greedy";
+  }
+}
