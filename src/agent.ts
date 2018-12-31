@@ -82,10 +82,14 @@ export class RandomAgent implements blocks.Agent {
   }
 }
 
+function ScorePieceArea(p: pieces.Piece): number {
+  return p.canonical.M * p.canonical.N;
+}
+
 // An agent that tries to place the biggest pieces first.
-export class GreedyAgent implements blocks.Agent {
+export class BiggestFirstAgent implements blocks.Agent {
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
-    ps = ps.sort((p1, p2) => p2.canonical.M * p2.canonical.N - p1.canonical.M * p1.canonical.N);
+    ps = ps.sort((p1, p2) => ScorePieceArea(p2) - ScorePieceArea(p1));
 
     for (const piece of ps) {
       const valid = GenerateValidMoves(inputs, [piece]);
@@ -97,6 +101,6 @@ export class GreedyAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "Greedy";
+    return "BiggestFirst";
   }
 }

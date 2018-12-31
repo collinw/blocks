@@ -15,9 +15,9 @@ function ShuffleArray<T>(array: T[]) {
 function MakePlayers(): blocks.Player[] {
   // Make it easy to swap out agents while testing.
   const agents = [
+    new agent.BiggestFirstAgent(),
+    new agent.BiggestFirstAgent(),
     new agent.RandomAgent(),
-    new agent.RandomAgent(),
-    new agent.GreedyAgent(),
     new agent.RandomAgent(),
   ];
   ShuffleArray(agents);
