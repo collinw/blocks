@@ -135,3 +135,11 @@ export class MatrixSet extends DeepSet<Matrix> {
     super(data);
   }
 }
+
+// The given array must not be empty.
+export function RandomElement<T>(a: T[]): T {
+  if (a.length === 0) {
+    throw new Error('Array is empty');
+  }
+  return a[Math.floor(a.length * Math.random())];
+}

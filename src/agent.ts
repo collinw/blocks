@@ -1,5 +1,6 @@
 import * as blocks from './blocks';
 import * as pieces from './pieces';
+import * as util from './util';
 
 // Figure out which cells in the piece are valid roots.
 // TODO: cache this per-form variant so we're not having to recalculate it all the time.
@@ -74,7 +75,7 @@ export class RandomAgent implements blocks.Agent {
     if (valid.length === 0) {
       return new blocks.GiveUp();
     }
-    return valid[Math.floor(valid.length * Math.random())];
+    return util.RandomElement(valid);
   }
 
   Description(): string {
@@ -94,7 +95,7 @@ export class BiggestFirstAgent implements blocks.Agent {
     for (const piece of ps) {
       const valid = GenerateValidMoves(inputs, [piece]);
       if (valid.length > 0) {
-        return valid[Math.floor(valid.length * Math.random())];
+        return util.RandomElement(valid);
       }
     }
     return new blocks.GiveUp();
@@ -130,7 +131,7 @@ export class HardestFirstAgent implements blocks.Agent {
     for (const piece of ps) {
       const valid = GenerateValidMoves(inputs, [piece]);
       if (valid.length > 0) {
-        return valid[Math.floor(valid.length * Math.random())];
+        return util.RandomElement(valid);
       }
     }
     return new blocks.GiveUp();

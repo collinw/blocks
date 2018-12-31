@@ -213,3 +213,10 @@ describe('MatrixSet', () => {
     expect(ms.Size()).to.equal(2);
   });
 });
+
+describe('RandomElement', () => {
+
+  it('should handle empty arrays', () => {
+    expect(() => util.RandomElement([])).to.throw('Array is empty');
+  });
+});
