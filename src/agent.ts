@@ -104,3 +104,39 @@ export class BiggestFirstAgent implements blocks.Agent {
     return "BiggestFirst";
   }
 }
+
+function CountInteriorCells(pf: pieces.PieceForm): number {
+  let interior = 0;
+  for (let m = 0; m < pf.M; m++) {
+    for (let n = 0; n < pf.N; n++) {
+      if (pf.Get(m, n) === 2) {
+        interior++;
+      }
+    }
+  }
+  return interior;
+}
+
+function ScorePieceDifficulty(p: pieces.Piece): number {
+  return ScorePieceArea(p) * (1 + CountInteriorCells(p.canonical));
+}
+
+// Agent that tries to place "harder" pieces first, where "hardness" is a static function
+// each piece based on area and number of interior cells.
+export class HardestFirstAgent implements blocks.Agent {
+  MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
+    ps = ps.sort((p1, p2) => ScorePieceDifficulty(p2) - ScorePieceDifficulty(p1));
+
+    for (const piece of ps) {
+      const valid = GenerateValidMoves(inputs, [piece]);
+      if (valid.length > 0) {
+        return valid[Math.floor(valid.length * Math.random())];
+      }
+    }
+    return new blocks.GiveUp();
+  }
+
+  Description(): string {
+    return "HardestFirst";
+  }
+}

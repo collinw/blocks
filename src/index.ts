@@ -16,7 +16,7 @@ function MakePlayers(): blocks.Player[] {
   // Make it easy to swap out agents while testing.
   const agents = [
     new agent.BiggestFirstAgent(),
-    new agent.BiggestFirstAgent(),
+    new agent.HardestFirstAgent(),
     new agent.RandomAgent(),
     new agent.RandomAgent(),
   ];
