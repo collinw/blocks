@@ -34,22 +34,21 @@ export function GenerateMove(
   return cells;
 }
 
-export function GenerateValidMoves(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move[] {
+export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Piece): blocks.Move[] {
   const valid = [];
   let evals = 0;
 
   for (const start of inputs.startPoints) {
-    for (const piece of ps) {
-      for (const variant of piece.variants) {
-        for (const root of GetRoots(variant)) {
-          evals++;
-          const cells = GenerateMove(start, root, variant);
-          const rejection = inputs.ValidateMove(cells);
-          if (rejection) {
-            continue;
-          }
-          valid.push(new blocks.Move(piece, cells));
+    for (const variant of piece.variants) {
+      for (const root of GetRoots(variant)) {
+        evals++;
+        const cells = GenerateMove(start, root, variant);
+        const rejection = inputs.ValidateMove(cells);
+        if (rejection) {
+          rejections[rejection] = (rejections[rejection] || 0) + 1;
+          continue;
         }
+        valid.push(new blocks.Move(piece, cells));
       }
     }
   }
@@ -68,14 +67,21 @@ export class QuitterAgent implements blocks.Agent {
   }
 }
 
-// An agent that generates all possible valid moves, then picks one at random.
+// An agent that picks a move at random.
 export class RandomAgent implements blocks.Agent {
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
-    const valid = GenerateValidMoves(inputs, ps);
-    if (valid.length === 0) {
+    if (ps.length === 0) {
       return new blocks.GiveUp();
     }
-    return util.RandomElement(valid);
+
+    util.ShuffleArray(ps);
+    for (const piece of ps) {
+      const valid = GenerateValidMoves(inputs, piece);
+      if (valid.length > 0) {
+        return util.RandomElement(valid);
+      }
+    }
+    return new blocks.GiveUp();
   }
 
   Description(): string {
@@ -93,7 +99,7 @@ export class BiggestFirstAgent implements blocks.Agent {
     ps = ps.sort((p1, p2) => ScorePieceArea(p2) - ScorePieceArea(p1));
 
     for (const piece of ps) {
-      const valid = GenerateValidMoves(inputs, [piece]);
+      const valid = GenerateValidMoves(inputs, piece);
       if (valid.length > 0) {
         return util.RandomElement(valid);
       }
@@ -129,7 +135,7 @@ export class HardestFirstAgent implements blocks.Agent {
     ps = ps.sort((p1, p2) => ScorePieceDifficulty(p2) - ScorePieceDifficulty(p1));
 
     for (const piece of ps) {
-      const valid = GenerateValidMoves(inputs, [piece]);
+      const valid = GenerateValidMoves(inputs, piece);
       if (valid.length > 0) {
         return util.RandomElement(valid);
       }

@@ -4,13 +4,7 @@ import * as agent from './agent';
 import * as blocks from './blocks';
 import * as pieces from './pieces';
 import * as ui from './ui';
-
-function ShuffleArray<T>(array: T[]) {
-  for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+import * as util from './util';
 
 function MakePlayers(): blocks.Player[] {
   // Make it easy to swap out agents while testing.
@@ -20,7 +14,7 @@ function MakePlayers(): blocks.Player[] {
     new agent.RandomAgent(),
     new agent.RandomAgent(),
   ];
-  ShuffleArray(agents);
+  util.ShuffleArray(agents);
 
   const players = [];
   for (let i = 0; i < 4; i++) {

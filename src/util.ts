@@ -143,3 +143,10 @@ export function RandomElement<T>(a: T[]): T {
   }
   return a[Math.floor(a.length * Math.random())];
 }
+
+export function ShuffleArray<T>(array: T[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
