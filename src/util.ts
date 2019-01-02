@@ -62,6 +62,10 @@ export class Matrix {
     return rotated;
   }
 
+  Copy(): Matrix {
+    return new Matrix(this.matrix);
+  }
+
   toString(): string {
     const rows = [];
     for (let m = 0; m < this.M; m++) {
