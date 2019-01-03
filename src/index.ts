@@ -34,10 +34,13 @@ function Play(state: blocks.GameState, player: blocks.Player, input: blocks.Play
     }
     state.ApplyMove(player, decision);
     return true;
+  } else if (decision instanceof blocks.GiveUp) {
+    console.log("Player " + player.id + " gave up!");
+    state.GiveUp(player);
+    return false;
+  } else {
+    throw new Error("Player returned an unexpected value");
   }
-  console.log("Player " + player.id + " gave up!");
-  state.GiveUp(player);
-  return false;
 }
 
 function PlayRound(state: blocks.GameState): boolean {
