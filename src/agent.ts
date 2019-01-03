@@ -152,3 +152,58 @@ export class HardestFirstAgent implements blocks.Agent {
     return "HardestFirst";
   }
 }
+
+function CountStartPoints(board: util.Matrix, playerId: number): number {
+  const [startPoints, exclude] = blocks.GetBoardState(board, playerId);
+  return startPoints.Size();
+}
+
+function ApplyMove(board: util.Matrix, move: blocks.Move, playerId: number): util.Matrix {
+  const m = board.Copy();
+  for (const c of move.cells) {
+    m.Set(c[0], c[1], playerId);
+  }
+  return m;
+}
+
+export class RankingAgent implements blocks.Agent {
+  MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
+    const moves: Array<[number, blocks.Move]> = [];
+    for (const piece of ps) {
+      for (const move of GenerateValidMoves(inputs, piece)) {
+        const score = this.ScoreMove(inputs.state.board, move, inputs.player.id);
+        moves.push([score, move]);
+      }
+    }
+
+    moves.sort((p1, p2) => p2[0] - p1[0]);
+    if (moves.length > 0) {
+      return moves[0][1];
+    }
+    return new blocks.GiveUp();
+  }
+
+  Description(): string {
+    return "Ranking";
+  }
+
+  ScoreMove(currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
+    const board = ApplyMove(currBoard, move, playerId);
+
+    let points = 0;
+
+    for (let m = 0; m < board.M; m++) {
+      for (let n = 0; n < board.N; n++) {
+        const val = board.Get(m, n);
+        if (val === playerId) {
+          points += 1;
+        }
+      }
+    }
+    const oldStartPoints = CountStartPoints(currBoard, playerId);
+    const newStartPoints = CountStartPoints(board, playerId);
+    const delta = newStartPoints - oldStartPoints;
+
+    return points + delta;
+  }
+}

@@ -67,7 +67,7 @@ function DrawPlayerTable(state: blocks.GameState) {
     const desc = player.agent.Description();
     $(".player" + player.id + " > .player-desc").text(desc);
 
-    const inputs = blocks.GetPlayerInputs(state, player.id);
+    const inputs = blocks.GetPlayerInputs(state, player);
     for (const coord of inputs.startPoints) {
       const cell = $('#' + CellId(coord[0], coord[1]));
       cell.addClass('possible-next');

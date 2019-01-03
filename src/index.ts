@@ -12,7 +12,7 @@ function MakePlayers(): blocks.Player[] {
     new agent.BiggestFirstAgent(),
     new agent.HardestFirstAgent(),
     new agent.RandomAgent(),
-    new agent.RandomAgent(),
+    new agent.RankingAgent(),
   ];
   util.ShuffleArray(agents);
 
@@ -51,7 +51,7 @@ function PlayRound(state: blocks.GameState): boolean {
       continue;
     }
 
-    const input = blocks.GetPlayerInputs(state, player.id);
+    const input = blocks.GetPlayerInputs(state, player);
     keepGoing = Play(state, player, input) || keepGoing;
   }
   return keepGoing;
@@ -60,10 +60,10 @@ function PlayRound(state: blocks.GameState): boolean {
 function FirstRound(state: blocks.GameState) {
   let keepGoing = false;
   for (let i = 0; i < state.players.length; i++) {
-    const start = kFirstRoundStartingPoints[i];
-    const input = new blocks.PlayerInputs(new blocks.CoordSet(start), new blocks.CoordSet());
-
     const player = state.players[i];
+    const start = kFirstRoundStartingPoints[i];
+    const input = new blocks.PlayerInputs(state, player, new blocks.CoordSet(start), new blocks.CoordSet());
+
     keepGoing = Play(state, player, input) || keepGoing;
   }
   return keepGoing;

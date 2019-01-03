@@ -56,12 +56,16 @@ export class Player {
   }
 }
 
+export function NewBoard(): util.Matrix {
+  return util.Matrix.Zero(20, 20);
+}
+
 export class GameState {
   board: util.Matrix;
   players: Player[];
 
   constructor(players: Player[]) {
-    this.board = util.Matrix.Zero(20, 20);
+    this.board = NewBoard();
     this.players = players;
   }
 
@@ -149,10 +153,14 @@ export function GetValidCoords(x: Iterable<Coord>): CoordSet {
 //
 // Coordinates are guaranteed to be in-range on the game board.
 export class PlayerInputs {
+  readonly state: GameState;
+  readonly player: Player;
   readonly startPoints: CoordSet;
   readonly exclude: CoordSet;
 
-  constructor(startPoints: CoordSet, exclude: CoordSet) {
+  constructor(state: GameState, player: Player, startPoints: CoordSet, exclude: CoordSet) {
+    this.state = state;
+    this.player = player;
     this.startPoints = startPoints;
     this.exclude = exclude;
   }
@@ -181,17 +189,17 @@ export class PlayerInputs {
   }
 }
 
-export function GetPlayerInputs(state: GameState, player: number): PlayerInputs {
+export function GetBoardState(board: util.Matrix, playerId: number): [CoordSet, CoordSet] {
   const valid = new CoordSet();
   const exclude = new CoordSet();
 
-  for (let m = 0; m < state.board.M; m++) {
-    for (let n = 0; n < state.board.N; n++) {
-      const val = state.board.Get(m, n);
+  for (let m = 0; m < board.M; m++) {
+    for (let n = 0; n < board.N; n++) {
+      const val = board.Get(m, n);
       if (val === 0) {
         // Ignore any empty cells.
         continue;
-      } else if (val === player) {
+      } else if (val === playerId) {
         // Squares directly touching the current square are off limits.
         exclude.Add([m, n + 1]);
         exclude.Add([m, n - 1]);
@@ -208,6 +216,10 @@ export function GetPlayerInputs(state: GameState, player: number): PlayerInputs 
     }
   }
   const startPoints = valid.Difference(exclude);
+  return [GetValidCoords(startPoints), GetValidCoords(exclude)];
+}
 
-  return new PlayerInputs(GetValidCoords(startPoints), GetValidCoords(exclude));
+export function GetPlayerInputs(state: GameState, player: Player): PlayerInputs {
+  const [startPoints, exclude] = GetBoardState(state.board, player.id);
+  return new PlayerInputs(state, player, startPoints, exclude);
 }
