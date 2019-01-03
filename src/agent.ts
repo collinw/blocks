@@ -37,6 +37,7 @@ export function GenerateMove(
 export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Piece): blocks.Move[] {
   const valid = [];
   let evals = 0;
+  const rejections : {[key: string]: number} = {};
 
   for (const start of inputs.startPoints) {
     for (const variant of piece.variants) {
@@ -52,7 +53,11 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Pi
       }
     }
   }
-  console.log('Evaluated ' + evals + ' possible moves, pruned to ' + valid.length);
+  const pcnt = Math.round(valid.length / evals * 100);
+  console.log('Evaluated ' + evals + ' possible moves, pruned to ' + valid.length + ' (' + pcnt + '% legal)');
+  for (const rejection of Object.keys(rejections)) {
+    console.log('Rejection: ' + rejection + ' = ' + rejections[rejection]);
+  }
   return valid;
 }
 
