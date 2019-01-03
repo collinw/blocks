@@ -214,6 +214,23 @@ describe('MatrixSet', () => {
   });
 });
 
+describe('CoordSet', () => {
+
+  it('actually works as a set', () => {
+    const cs = new util.CoordSet();
+    expect(cs.Size()).to.equal(0);
+    expect(cs.Has([2, 2])).to.equal(false);
+
+    cs.Add([2, 2]);
+    cs.Add([2, 2]);
+    cs.Add([4, 7]);
+
+    expect(cs.Size()).to.equal(2);
+    expect(cs.Has([2, 2])).to.equal(true);
+    expect(cs.Has([2, 7])).to.equal(false);
+  });
+});
+
 describe('RandomElement', () => {
 
   it('should handle empty arrays', () => {

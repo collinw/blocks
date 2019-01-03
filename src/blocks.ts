@@ -18,9 +18,9 @@ export class Move {
   piece: pieces.Piece;
   // The specific set of cells we want to occupy with this piece.
   // Conceptually, this is a set, but an array is faster.
-  cells: Coord[];
+  cells: util.Coord[];
 
-  constructor(piece: pieces.Piece, cells: Coord[]) {
+  constructor(piece: pieces.Piece, cells: util.Coord[]) {
     this.piece = piece;
     this.cells = cells;
   }
@@ -117,17 +117,7 @@ export function GetScores(state: GameState): Scores {
   return scores;
 }
 
-// Coords are (m, n) coordinate pairs.
-export type Coord = [number, number];
-
-// A set of Coord objects.
-export class CoordSet extends util.DeepSet<Coord> {
-  constructor(...data: Coord[]) {
-    super(data);
-  }
-}
-
-export function IsCoordValid(c: Coord): boolean {
+export function IsCoordValid(c: util.Coord): boolean {
   if (c[0] < 0 || c[0] >= 20) {
     return false;
   }
@@ -137,8 +127,8 @@ export function IsCoordValid(c: Coord): boolean {
   return true;
 }
 
-export function GetValidCoords(x: Iterable<Coord>): CoordSet {
-  const valid = new CoordSet();
+export function GetValidCoords(x: Iterable<util.Coord>): util.CoordSet {
+  const valid = new util.CoordSet();
   for (const coord of x) {
     if (IsCoordValid(coord)) {
       valid.Add(coord);
@@ -155,17 +145,17 @@ export function GetValidCoords(x: Iterable<Coord>): CoordSet {
 export class PlayerInputs {
   readonly state: GameState;
   readonly player: Player;
-  readonly startPoints: CoordSet;
-  readonly exclude: CoordSet;
+  readonly startPoints: util.CoordSet;
+  readonly exclude: util.CoordSet;
 
-  constructor(state: GameState, player: Player, startPoints: CoordSet, exclude: CoordSet) {
+  constructor(state: GameState, player: Player, startPoints: util.CoordSet, exclude: util.CoordSet) {
     this.state = state;
     this.player = player;
     this.startPoints = startPoints;
     this.exclude = exclude;
   }
 
-  ValidateCoord(coord: Coord): string|null {
+  ValidateCoord(coord: util.Coord): string|null {
     if (!IsCoordValid(coord)) {
       return 'Coordinate falls off the board';
     }
@@ -178,7 +168,7 @@ export class PlayerInputs {
   // Helper method to figure out if a proposed move is valid.
   // - All cells in the proposed move must be on the board.
   // - All cells in the proposed move must not be illegal.
-  ValidateMove(cells: Iterable<Coord>): string|null {
+  ValidateMove(cells: Iterable<util.Coord>): string|null {
     for (const coord of cells) {
       const rejection = this.ValidateCoord(coord);
       if (rejection) {
@@ -189,9 +179,9 @@ export class PlayerInputs {
   }
 }
 
-export function GetBoardState(board: util.Matrix, playerId: number): [CoordSet, CoordSet] {
-  const valid = new CoordSet();
-  const exclude = new CoordSet();
+export function GetBoardState(board: util.Matrix, playerId: number): [util.CoordSet, util.CoordSet] {
+  const valid = new util.CoordSet();
+  const exclude = new util.CoordSet();
 
   for (let m = 0; m < board.M; m++) {
     for (let n = 0; n < board.N; n++) {

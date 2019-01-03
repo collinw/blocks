@@ -139,6 +139,15 @@ export class MatrixSet extends DeepSet<Matrix> {
     super(data);
   }
 }
+// Coords are (m, n) coordinate pairs.
+export type Coord = [number, number];
+
+// A set of Coord objects.
+export class CoordSet extends DeepSet<Coord> {
+  constructor(...data: Coord[]) {
+    super(data);
+  }
+}
 
 // The given array must not be empty.
 export function RandomElement<T>(a: T[]): T {

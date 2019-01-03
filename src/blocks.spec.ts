@@ -1,4 +1,5 @@
 import * as blocks from './blocks';
+import * as util from './util';
 import { assert, expect } from 'chai';
 import 'mocha';
 
@@ -18,7 +19,7 @@ describe('GameState', () => {
       [-3, 15],
       [15, -3],
     ]);
-    expect(result).to.deep.equal(new blocks.CoordSet([0, 0], [5, 8]));
+    expect(result).to.deep.equal(new util.CoordSet([0, 0], [5, 8]));
   });
 });
 
@@ -35,14 +36,14 @@ describe('GetBoardState', () => {
     // simply hardcode the initial set of inputs for each player.
     let [startPoints, exclude] = blocks.GetBoardState(board, 1);
     expect(startPoints.Size()).to.equal(0);
-    expect(exclude).to.deep.equal(new blocks.CoordSet([0, 0], [0, 1]));
+    expect(exclude).to.deep.equal(new util.CoordSet([0, 0], [0, 1]));
 
     [startPoints, exclude] = blocks.GetBoardState(board, 2);
-    expect(startPoints).to.deep.equal(new blocks.CoordSet([1, 0], [1, 2]));
-    expect(exclude).to.deep.equal(new blocks.CoordSet([0, 0], [0, 1], [0, 2], [1, 1]));
+    expect(startPoints).to.deep.equal(new util.CoordSet([1, 0], [1, 2]));
+    expect(exclude).to.deep.equal(new util.CoordSet([0, 0], [0, 1], [0, 2], [1, 1]));
 
     [startPoints, exclude] = blocks.GetBoardState(board, 3);
-    expect(startPoints).to.deep.equal(new blocks.CoordSet([1, 1]));
-    expect(exclude).to.deep.equal(new blocks.CoordSet([0, 0], [0, 1], [1, 0]));
+    expect(startPoints).to.deep.equal(new util.CoordSet([1, 1]));
+    expect(exclude).to.deep.equal(new util.CoordSet([0, 0], [0, 1], [1, 0]));
   });
 });

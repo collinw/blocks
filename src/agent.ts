@@ -4,8 +4,8 @@ import * as util from './util';
 
 // Figure out which cells in the piece are valid roots.
 // TODO: cache this per-form variant so we're not having to recalculate it all the time.
-export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
-  const roots = new blocks.CoordSet();
+export function GetRoots(pieceForm: pieces.PieceForm): util.CoordSet {
+  const roots = new util.CoordSet();
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
       if (pieceForm.Get(m, n) === 1) {
@@ -19,11 +19,11 @@ export function GetRoots(pieceForm: pieces.PieceForm): blocks.CoordSet {
 // Conceptually, this returns a set, but an array is faster, and this is a
 // core part of the game.
 export function GenerateMove(
-    start: blocks.Coord, root: blocks.Coord, pieceForm: pieces.PieceForm): blocks.Coord[] {
+    start: util.Coord, root: util.Coord, pieceForm: pieces.PieceForm): util.Coord[] {
   const mOffset = start[0] - root[0];
   const nOffset = start[1] - root[1];
 
-  const cells : blocks.Coord[] = [];
+  const cells : util.Coord[] = [];
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
       if (pieceForm.Get(m, n) > 0) {

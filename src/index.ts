@@ -23,7 +23,7 @@ function MakePlayers(): blocks.Player[] {
   return players;
 }
 
-const kFirstRoundStartingPoints: blocks.Coord[] = [[0, 0], [0, 19], [19, 0], [19, 19]];
+const kFirstRoundStartingPoints: util.Coord[] = [[0, 0], [0, 19], [19, 0], [19, 19]];
 
 function Play(state: blocks.GameState, player: blocks.Player, input: blocks.PlayerInputs): boolean {
   const decision = player.MakeMove(input);
@@ -62,7 +62,7 @@ function FirstRound(state: blocks.GameState) {
   for (let i = 0; i < state.players.length; i++) {
     const player = state.players[i];
     const start = kFirstRoundStartingPoints[i];
-    const input = new blocks.PlayerInputs(state, player, new blocks.CoordSet(start), new blocks.CoordSet());
+    const input = new blocks.PlayerInputs(state, player, new util.CoordSet(start), new util.CoordSet());
 
     keepGoing = Play(state, player, input) || keepGoing;
   }

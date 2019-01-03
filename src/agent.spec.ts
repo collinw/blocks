@@ -1,6 +1,7 @@
 import * as agent from './agent';
 import * as blocks from './blocks';
 import * as pieces from './pieces';
+import * as util from './util';
 import { assert, expect } from 'chai';
 import 'mocha';
 
@@ -8,11 +9,11 @@ describe('AgentUtilities', () => {
 
   it('can generate a new move proposal', () => {
     // Apply the upper-left corner of this piece at (5, 5).
-    const start: blocks.Coord = [5, 5];
+    const start: util.Coord = [5, 5];
     let form = new pieces.PieceForm(
       [[1, 1],
        [1, 1]]);
-    let root: blocks.Coord = [0, 0];
+    let root: util.Coord = [0, 0];
     let move = agent.GenerateMove(start, root, form);
     expect(move).to.deep.equal(
       [[5, 5], [5, 6],
