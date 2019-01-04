@@ -113,16 +113,6 @@ export class DeepSet<T> {
     return diff;
   }
 
-  Intersection(t: DeepSet<T>): DeepSet<T> {
-    const intersection = new DeepSet<T>([]);
-    for (const x of this.Values()) {
-      if (t.Has(x)) {
-        intersection.Add(x);
-      }
-    }
-    return intersection;
-  }
-
   * [Symbol.iterator]() {
     for (const x of this.Values()) {
       yield x;
