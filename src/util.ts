@@ -178,9 +178,7 @@ export class CoordSet {
     for (let m = 0; m < this.data.M; m++) {
       for (let n = 0; n < this.data.N; n++) {
         if (this.data.Get(m, n) === 1) {
-          // This is necessary to explicitly specify the yield type.
-          const c: Coord = [m, n];
-          yield c;
+          yield [m, n] as Coord;
         }
       }
     }
