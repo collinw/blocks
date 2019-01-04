@@ -2,7 +2,9 @@ import * as util from './util';
 import { assert, expect } from 'chai';
 import 'mocha';
 
-class CoordSet extends util.DeepSet<[number, number]> {
+// This is used only to make sure DeepSet can actually do
+// deep equality testing on the objects going into it.
+class PairSet extends util.DeepSet<[number, number]> {
   constructor(...data: Array<[number, number]>) {
     super(data);
   }
@@ -11,7 +13,7 @@ class CoordSet extends util.DeepSet<[number, number]> {
 describe('DeepSet', () => {
 
   it('should support basic set operations', () => {
-    const s = new CoordSet();
+    const s = new PairSet();
     expect(s.Size()).to.equal(0);
 
     s.Add([4, 5]);
@@ -28,29 +30,29 @@ describe('DeepSet', () => {
 
   it('should diff sets', () => {
     // Both sets are empty.
-    let set = new CoordSet();
-    let result = set.Difference(new CoordSet());
-    expect(result).to.deep.equal(new CoordSet());
+    let set = new PairSet();
+    let result = set.Difference(new PairSet());
+    expect(result).to.deep.equal(new PairSet());
 
     // The other set is empty.
-    set = new CoordSet([1, 2], [3, 4]);
-    result = set.Difference(new CoordSet());
-    expect(result).to.deep.equal(new CoordSet([1, 2], [3, 4]));
+    set = new PairSet([1, 2], [3, 4]);
+    result = set.Difference(new PairSet());
+    expect(result).to.deep.equal(new PairSet([1, 2], [3, 4]));
 
     // This set is empty, the other set has values.
-    set = new CoordSet();
-    result = set.Difference(new CoordSet([1, 2], [3, 4]));
-    expect(result).to.deep.equal(new CoordSet());
+    set = new PairSet();
+    result = set.Difference(new PairSet([1, 2], [3, 4]));
+    expect(result).to.deep.equal(new PairSet());
 
     // Both sets have values, but they are disjoint.
-    set = new CoordSet([1, 2], [3, 4]);
-    result = set.Difference(new CoordSet([5, 6]));
-    expect(result).to.deep.equal(new CoordSet([1, 2], [3, 4]));
+    set = new PairSet([1, 2], [3, 4]);
+    result = set.Difference(new PairSet([5, 6]));
+    expect(result).to.deep.equal(new PairSet([1, 2], [3, 4]));
 
     // Both sets have values, but they have a non-null intersection.
-    set = new CoordSet([1, 2], [3, 4]);
-    result = set.Difference(new CoordSet([3, 4]));
-    expect(result).to.deep.equal(new CoordSet([1, 2]));
+    set = new PairSet([1, 2], [3, 4]);
+    result = set.Difference(new PairSet([3, 4]));
+    expect(result).to.deep.equal(new PairSet([1, 2]));
   });
 });
 
