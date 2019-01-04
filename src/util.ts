@@ -129,6 +129,7 @@ export class MatrixSet extends DeepSet<Matrix> {
     super(data);
   }
 }
+
 // Coords are (m, n) coordinate pairs.
 export type Coord = [number, number];
 
@@ -136,10 +137,11 @@ export type Coord = [number, number];
 // a game board, thus we can optimize for a 20x20 grid of possible
 // coordinates.
 //
+// Coordinates off the board are not added to the set. Downstream
+// code was having to filter them out anyway.
+//
 // DeepSet is slow because it calls toString all the time; this
 // class is optimized for set operations on [number, number] pairs.
-//
-// Must support coordinates off the board!
 export class CoordSet {
   private data: Matrix;
 
@@ -150,11 +152,10 @@ export class CoordSet {
     }
   }
 
+  // Coordinates off the board are not added to the set.
   Add(coord: Coord) {
     const [x, y] = coord;
     if (x < 0 || x >= this.data.M || y < 0 || y >= this.data.N) {
-      // Simply drop out-of-range coordinates. No one cares about them,
-      // downstream code was having to filter them out anyway.
       return;
     }
     this.data.Set(x, y, 1);
