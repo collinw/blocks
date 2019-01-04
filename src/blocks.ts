@@ -183,6 +183,7 @@ export function GetBoardState(board: util.Matrix, playerId: number): [util.Coord
   const valid = new util.CoordSet();
   const exclude = new util.CoordSet();
 
+  // CoordSet will simply drop any coordinates that fall off the board.
   for (let m = 0; m < board.M; m++) {
     for (let n = 0; n < board.N; n++) {
       const val = board.Get(m, n);
@@ -206,7 +207,7 @@ export function GetBoardState(board: util.Matrix, playerId: number): [util.Coord
     }
   }
   const startPoints = valid.Difference(exclude);
-  return [GetValidCoords(startPoints), GetValidCoords(exclude)];
+  return [startPoints, exclude];
 }
 
 export function GetPlayerInputs(state: GameState, player: Player): PlayerInputs {

@@ -191,18 +191,47 @@ describe('MatrixSet', () => {
 
 describe('CoordSet', () => {
 
-  it('actually works as a set', () => {
-    const cs = new util.CoordSet();
-    expect(cs.Size()).to.equal(0);
-    expect(cs.Has([2, 2])).to.equal(false);
+  it('should support basic set operations', () => {
+    const s = new util.CoordSet();
+    expect(s.Size()).to.equal(0);
 
-    cs.Add([2, 2]);
-    cs.Add([2, 2]);
-    cs.Add([4, 7]);
+    s.Add([4, 5]);
+    expect(s.Size()).to.equal(1);
 
-    expect(cs.Size()).to.equal(2);
-    expect(cs.Has([2, 2])).to.equal(true);
-    expect(cs.Has([2, 7])).to.equal(false);
+    s.Add([4, 5]);
+    expect(s.Size()).to.equal(1);
+
+    s.Add([3, 3]);
+    expect(s.Size()).to.equal(2);
+
+    expect(s.Has([0, 0])).to.equal(false);
+  });
+
+  it('should diff sets', () => {
+    // Both sets are empty.
+    let set = new util.CoordSet();
+    let result = set.Difference(new util.CoordSet());
+    expect(result).to.deep.equal(new util.CoordSet());
+
+    // The other set is empty.
+    set = new util.CoordSet([1, 2], [3, 4]);
+    result = set.Difference(new util.CoordSet());
+    expect(result).to.deep.equal(new util.CoordSet([1, 2], [3, 4]));
+
+    // This set is empty, the other set has values.
+    set = new util.CoordSet();
+    result = set.Difference(new util.CoordSet([1, 2], [3, 4]));
+    expect(result).to.deep.equal(new util.CoordSet());
+
+    // Both sets have values, but they are disjoint.
+    set = new util.CoordSet([1, 2], [3, 4]);
+    result = set.Difference(new util.CoordSet([5, 6]));
+    expect(result).to.deep.equal(new util.CoordSet([1, 2], [3, 4]));
+
+    // Both sets have values, but they have a non-null intersection.
+    set = new util.CoordSet([1, 2], [3, 4]);
+    result = set.Difference(new util.CoordSet([3, 4]));
+    expect(result).to.deep.equal(new util.CoordSet([1, 2]));
   });
 });
 

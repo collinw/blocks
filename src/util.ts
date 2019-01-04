@@ -132,10 +132,71 @@ export class MatrixSet extends DeepSet<Matrix> {
 // Coords are (m, n) coordinate pairs.
 export type Coord = [number, number];
 
-// A set of Coord objects.
-export class CoordSet extends DeepSet<Coord> {
+// A set of Coord objects. We assume that all coordinates are on
+// a game board, thus we can optimize for a 20x20 grid of possible
+// coordinates.
+//
+// DeepSet is slow because it calls toString all the time; this
+// class is optimized for set operations on [number, number] pairs.
+//
+// Must support coordinates off the board!
+export class CoordSet {
+  private data: Matrix;
+
   constructor(...data: Coord[]) {
-    super(data);
+    this.data = Matrix.Zero(20, 20);
+    for (const coord of data) {
+      this.Add(coord);
+    }
+  }
+
+  Add(coord: Coord) {
+    const [x, y] = coord;
+    if (x < 0 || x >= this.data.M || y < 0 || y >= this.data.N) {
+      // Simply drop out-of-range coordinates. No one cares about them,
+      // downstream code was having to filter them out anyway.
+      return;
+    }
+    this.data.Set(x, y, 1);
+  }
+
+  Has(coord: Coord): boolean {
+    const [x, y] = coord;
+    return this.data.Get(x, y) === 1;
+  }
+
+  Size(): number {
+    let size = 0;
+    for (const coord of this) {
+      size++;
+    }
+    return size;
+  }
+
+  * [Symbol.iterator]() {
+    for (let m = 0; m < this.data.M; m++) {
+      for (let n = 0; n < this.data.N; n++) {
+        if (this.data.Get(m, n) === 1) {
+          // This is necessary to explicitly specify the yield type.
+          const c: Coord = [m, n];
+          yield c;
+        }
+      }
+    }
+  }
+
+  Difference(t: CoordSet): CoordSet {
+    const diff = new CoordSet();
+    for (const coord of this) {
+      if (!t.Has(coord)) {
+        diff.Add(coord);
+      }
+    }
+    return diff;
+  }
+
+  toString(): string {
+    return Array.from(this).join(', ');
   }
 }
 
