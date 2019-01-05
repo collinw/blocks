@@ -3,26 +3,6 @@ import * as util from './util';
 import { assert, expect } from 'chai';
 import 'mocha';
 
-const kNoPlayers: blocks.Player[] = [];
-
-describe('GameState', () => {
-
-  it('should validate cooordinates', () => {
-    const result = blocks.GetValidCoords([
-      // Valid.
-      [0, 0],
-      [5, 8],
-      // Off the far end of the board.
-      [22, 3],
-      [7, 34],
-      // Negative coordinates.
-      [-3, 15],
-      [15, -3],
-    ]);
-    expect(result).to.deep.equal(new util.CoordSet([0, 0], [5, 8]));
-  });
-});
-
 describe('GetBoardState', () => {
 
   it('should work', () => {

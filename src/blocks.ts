@@ -127,16 +127,6 @@ export function IsCoordValid(c: util.Coord): boolean {
   return true;
 }
 
-export function GetValidCoords(x: Iterable<util.Coord>): util.CoordSet {
-  const valid = new util.CoordSet();
-  for (const coord of x) {
-    if (IsCoordValid(coord)) {
-      valid.Add(coord);
-    }
-  }
-  return valid;
-}
-
 // In order to make decisions about their next moves, players need to know
 // which squares are open starting points and which squares are taken or
 // otherwise invalid.
