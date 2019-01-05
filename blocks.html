@@ -70,12 +70,38 @@
       #pieces-remaining .piece td.piece-unit {
         background-color: black;
       }
+      #tournament-score {
+        position: relative;
+        border: 1px solid grey;
+        border-spacing: 0px;
+      }
+      #tournament-score th {
+        text-align: center;
+        border: 1px solid grey;
+        margin: 0px;
+        padding: 10px;
+      }
+      #tournament-score td {
+        text-align: center;
+        border: 1px solid grey;
+        margin: 0px;
+        padding: 5px;
+      }
+      #game-tournament-results {
+        display: flex;
+      }
     </style>
   </head>
   <body>
     <script src="build/bundle.js"></script>
-    <div id="game">
-      <table id="board"></table>
+    <div id="game-tournament-results">
+      <div id="game">
+        <table id="board"></table>
+      </div>
+      <div id="tournament">
+        <table id="tournament-score">
+        </table>
+      </div>
     </div>
     <table id="pieces-remaining">
       <thead>

@@ -213,3 +213,25 @@ export function ShuffleArray<T>(array: T[]) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+// A map type with a simplified Get() method: if the key is not found,
+// throw an exception. This avoids having to litter client code with
+// "if(x === undefined)" guards.
+export class SimpleMap<T, U> extends Map<T, U> {
+  Get(key: T): U {
+    const val = this.get(key);
+    if (val === undefined) {
+      throw new Error("Unknown key: " + key);
+    }
+    return val;
+  }
+}
+
+// A map type with a simplified interface for incrementing numeric
+// map values.
+export class NumberMap<T> extends SimpleMap<T, number>{
+  Add(key: T, delta: number) {
+    const val = this.Get(key) + delta;
+    this.set(key, val);
+  }
+}

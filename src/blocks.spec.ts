@@ -27,3 +27,36 @@ describe('GetBoardState', () => {
     expect(exclude).to.deep.equal(new util.CoordSet([0, 0], [0, 1], [1, 0]));
   });
 });
+
+describe('ScoresToRanking', () => {
+
+  it('should handle simple rankings', () => {
+    const scores = new blocks.Scores();
+    scores.set(1, 6);  // First
+    scores.set(3, 5);  // Second
+    scores.set(2, 1);  // Third
+    scores.set(4, 0);  // Fourth
+
+    const ranking = blocks.ScoresToRanking(scores);
+    expect(ranking.size).to.equal(4);
+    expect(ranking.Get(1)).to.equal(1);  // First
+    expect(ranking.Get(2)).to.equal(3);  // Third
+    expect(ranking.Get(3)).to.equal(2);  // Second
+    expect(ranking.Get(4)).to.equal(4);  // Fourth
+  });
+
+  it('should handle ties', () => {
+    const scores = new blocks.Scores();
+    scores.set(3, 5);  // Second (tie)
+    scores.set(2, 5);  // Second (tie)
+    scores.set(4, 0);  // Third
+    scores.set(1, 6);  // First
+
+    const ranking = blocks.ScoresToRanking(scores);
+    expect(ranking.size).to.equal(4);
+    expect(ranking.Get(1)).to.equal(1);  // First
+    expect(ranking.Get(2)).to.equal(2);  // Second
+    expect(ranking.Get(3)).to.equal(2);  // Second
+    expect(ranking.Get(4)).to.equal(3);  // Fourth
+  });
+});

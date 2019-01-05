@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import * as blocks from './blocks';
 import * as pieces from './pieces';
+import * as util from './util';
 
 function CellId(m: number, n: number): string {
   return 'cell' + m + 'x' + n;
@@ -62,10 +63,10 @@ function DrawPlayerTable(state: blocks.GameState) {
     const player = state.players[i];
 
     const elem = $('#player-score-' + player.id);
-    elem.text(scores[player.id]);
+    elem.text(scores.Get(player.id));
 
     const desc = player.agent.Description();
-    $(".player" + player.id + " > .player-desc").text(desc);
+    $("#pieces-remaining .player" + player.id + " > .player-desc").text(desc);
 
     const inputs = blocks.GetPlayerInputs(state, player);
     for (const coord of inputs.startPoints) {
@@ -77,7 +78,6 @@ function DrawPlayerTable(state: blocks.GameState) {
     DrawRemainingPieces(player);
   }
 }
-
 
 export function Draw(state: blocks.GameState) {
   DrawBoard(state);

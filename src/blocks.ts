@@ -87,18 +87,18 @@ export class GameState {
   }
 }
 
-type Scores = {
-  [id: number]: number;
-};
+// A mapping from player ID to score in a single game.
+export class Scores extends util.NumberMap<number> {
+}
 
 export function GetScores(state: GameState): Scores {
-  const scores: Scores = {1: 0, 2: 0, 3: 0, 4: 0};
+  const scores = new Scores([[1, 0], [2, 0], [3, 0], [4, 0]]);
 
   for (let m = 0; m < state.board.M; m++) {
     for (let n = 0; n < state.board.N; n++) {
       const val = state.board.Get(m, n);
       if (val > 0) {
-        scores[val]++;
+        scores.Add(val, 1);
       }
     }
   }
@@ -106,15 +106,44 @@ export function GetScores(state: GameState): Scores {
   // You get a bonus for playing all your pieces.
   for (const player of state.players) {
     if (player.pieces.length === 0) {
-      scores[player.id] += 15;
+      scores.Add(player.id, 15);
       // You get a further bonus if the single square was the last piece you played.
       const lastMove = player.moves[player.moves.length - 1];
       if (lastMove.IsSingleSquare()) {
-        scores[player.id] += 5;
+        scores.Add(player.id, 5);
       }
     }
   }
   return scores;
+}
+
+// A mapping of player ID to rank number. If there is a tie, multiple players
+// may have the same rank.
+export class Ranking extends util.NumberMap<number> {
+}
+
+// TODO: if there is a tie, the current implementation will not skip ranks.
+// For example, if there is a tie for first, the following rank will be
+// "second"; arguably the next rank should be "third".
+export function ScoresToRanking(pScores: Scores): Ranking {
+  const scores: Array<[number, number]> = [];
+  for (const [playerId, score] of pScores) {
+    const score = pScores.Get(playerId);
+    scores.push([playerId, score]);
+  }
+  scores.sort((p1, p2) => p2[1] - p1[1]);
+
+  const ranking = new Ranking();
+  let rank = 1;
+  let rankScore = 0;
+  for (const [playerId, score] of scores) {
+    if (score < rankScore) {
+      rank++;
+    }
+    ranking.set(playerId, rank);
+    rankScore = score;
+  }
+  return ranking;
 }
 
 export function IsCoordValid(c: util.Coord): boolean {
