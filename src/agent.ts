@@ -167,6 +167,12 @@ function ApplyMove(board: util.Matrix, move: blocks.Move, playerId: number): uti
 }
 
 export class RankingAgent implements blocks.Agent {
+  private weights: number[];
+
+  constructor(weights: number[]) {
+    this.weights = weights;
+  }
+
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
     const moves: Array<[number, blocks.Move]> = [];
     for (const piece of ps) {
@@ -184,14 +190,13 @@ export class RankingAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "Ranking";
+    return 'Ranking(' + this.weights.join(', ') + ')';
   }
 
   ScoreMove(currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
     const board = ApplyMove(currBoard, move, playerId);
 
     let points = 0;
-
     for (let m = 0; m < board.M; m++) {
       for (let n = 0; n < board.N; n++) {
         const val = board.Get(m, n);
@@ -204,6 +209,6 @@ export class RankingAgent implements blocks.Agent {
     const newStartPoints = CountStartPoints(board, playerId);
     const delta = newStartPoints - oldStartPoints;
 
-    return points + delta;
+    return points * this.weights[0] + delta * this.weights[1] + ScorePieceDifficulty(move.piece) * this.weights[2];
   }
 }

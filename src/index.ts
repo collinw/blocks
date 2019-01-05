@@ -12,7 +12,7 @@ function MakePlayers(): blocks.Player[] {
     new agent.BiggestFirstAgent(),
     new agent.HardestFirstAgent(),
     new agent.RandomAgent(),
-    new agent.RankingAgent(),
+    new agent.RankingAgent([1, 1, 1]),
   ];
   util.ShuffleArray(agents);
 
