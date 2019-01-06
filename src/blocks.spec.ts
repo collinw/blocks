@@ -57,6 +57,36 @@ describe('ScoresToRanking', () => {
     expect(ranking.Get(1)).to.equal(1);  // First
     expect(ranking.Get(2)).to.equal(2);  // Second
     expect(ranking.Get(3)).to.equal(2);  // Second
-    expect(ranking.Get(4)).to.equal(3);  // Fourth
+    expect(ranking.Get(4)).to.equal(4);  // Fourth
+  });
+
+  it('should handle 3-way ties', () => {
+    const scores = new blocks.Scores();
+    scores.set(3, 5);
+    scores.set(2, 3);
+    scores.set(4, 5);
+    scores.set(1, 5);
+
+    const ranking = blocks.ScoresToRanking(scores);
+    expect(ranking.size).to.equal(4);
+    expect(ranking.Get(1)).to.equal(1);  // First
+    expect(ranking.Get(2)).to.equal(4);  // Fourth
+    expect(ranking.Get(3)).to.equal(1);  // First
+    expect(ranking.Get(4)).to.equal(1);  // First
+  });
+
+  it('should handle 4-way ties', () => {
+    const scores = new blocks.Scores();
+    scores.set(3, 0);
+    scores.set(2, 0);
+    scores.set(4, 0);
+    scores.set(1, 0);
+
+    const ranking = blocks.ScoresToRanking(scores);
+    expect(ranking.size).to.equal(4);
+    expect(ranking.Get(1)).to.equal(1);  // First
+    expect(ranking.Get(2)).to.equal(1);  // First
+    expect(ranking.Get(3)).to.equal(1);  // First
+    expect(ranking.Get(4)).to.equal(1);  // First
   });
 });

@@ -122,9 +122,6 @@ export function GetScores(state: GameState): Scores {
 export class Ranking extends util.NumberMap<number> {
 }
 
-// TODO: if there is a tie, the current implementation will not skip ranks.
-// For example, if there is a tie for first, the following rank will be
-// "second"; arguably the next rank should be "third".
 export function ScoresToRanking(pScores: Scores): Ranking {
   const scores: Array<[number, number]> = [];
   for (const [playerId, score] of pScores) {
@@ -135,10 +132,14 @@ export function ScoresToRanking(pScores: Scores): Ranking {
 
   const ranking = new Ranking();
   let rank = 1;
-  let rankScore = 0;
+  let rankScore = -1;
+  let tie = 1;
   for (const [playerId, score] of scores) {
-    if (score < rankScore) {
-      rank++;
+    if (score === rankScore) {
+      tie++;
+    } else if (score < rankScore) {
+      rank += tie;
+      tie = 1;
     }
     ranking.set(playerId, rank);
     rankScore = score;
