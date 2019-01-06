@@ -195,7 +195,7 @@ function Main() {
   const agents = [
     new agent.RankingAgent([1, 0, 0]),
     new agent.RankingAgent([1, 1, 0]),
-    new agent.RandomAgent(),
+    new agent.RankingAgent([0, 1, 1]),
     new agent.RankingAgent([1, 1, 1]),
   ];
 
