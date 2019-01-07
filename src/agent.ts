@@ -4,12 +4,12 @@ import * as util from './util';
 
 // Figure out which cells in the piece are valid roots.
 // TODO: cache this per-form variant so we're not having to recalculate it all the time.
-export function GetRoots(pieceForm: pieces.PieceForm): util.CoordSet {
-  const roots = new util.CoordSet();
+export function GetRoots(pieceForm: pieces.PieceForm): util.Coord[] {
+  const roots: util.Coord[] = [];
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
       if (pieceForm.Get(m, n) === 1) {
-        roots.Add([m, n]);
+        roots.push([m, n]);
       }
     }
   }
