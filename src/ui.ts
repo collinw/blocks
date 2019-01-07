@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import * as blocks from './blocks';
 import * as pieces from './pieces';
+import * as tournament from './tournament';
 import * as util from './util';
 
 function CellId(m: number, n: number): string {
@@ -82,4 +83,45 @@ function DrawPlayerTable(state: blocks.GameState) {
 export function Draw(state: blocks.GameState) {
   DrawBoard(state);
   DrawPlayerTable(state);
+}
+
+const kRankingDesc = new util.SimpleMap([[1, '1st'], [2, '2nd'], [3, '3rd'], [4, '4th']]);
+
+export function DrawTournament(t: tournament.Tournament) {
+  const total: {[id: string]: number} = {};
+  const rows = [];
+
+  let header = '<thead><th>Game</th>';
+  for (const agent of t.agents) {
+    const desc = agent.Description();
+    total[desc] = 0;
+
+    header += '<th>' + desc + '</th>';
+  }
+  rows.push(header + '</thead>');
+
+  for (let i = 0; i < t.results.length; i++) {
+    const result = t.results[i];
+
+    // TODO: move the "how many points is this rank worth" calculation into
+    // tournament.ts.
+    let row = '<tr><td>#' + (i + 1) + '</td>';
+    for (const agent of t.agents) {
+      const desc = agent.Description();
+      const rank = result.agentRanking[desc];
+      const score = result.agentScores[desc];
+      const points = tournament.kRankingPoints.Get(rank);
+      total[desc] += points;
+      row += '<td>' + kRankingDesc.Get(rank) + ' (' + score + ') -> ' + points + ' pts</td>';
+    }
+    rows.push(row + '</tr>');
+  }
+
+  let summary = '<tr><td></td>';
+  for (const agent of t.agents) {
+    summary += '<td>' + total[agent.Description()] + '</td>';
+  }
+  rows.push(summary + '</tr>');
+
+  $('#tournament-score').html(rows.join(''));
 }
