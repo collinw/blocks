@@ -8,6 +8,62 @@ import * as util from './util';
 
 const kFirstRoundStartingPoints: util.Coord[] = [[0, 0], [0, 19], [19, 0], [19, 19]];
 
+type GameCallback = (state: blocks.GameState) => void;
+
+class Game {
+  private gameStart: GameCallback[];
+  private roundDone: GameCallback[];
+  private gameDone: GameCallback[];
+
+  constructor() {
+    this.gameStart = [];
+    this.roundDone = [];
+    this.gameDone = [];
+  }
+
+  Play(players: blocks.Player[]) {
+    const state = new blocks.GameState(players);
+    this.RunCallbacks(this.gameStart, state);
+
+    console.log('Round 1');
+    FirstRound(state);
+    this.RunCallbacks(this.roundDone, state);
+    this.PlayAgainUntilDone(state);
+  }
+
+  PlayAgainUntilDone(state: blocks.GameState) {
+    // Using setTimeout here gives the UI a chance to redraw during the game.
+    setTimeout(() => {
+      console.log('Next round');
+      const keepGoing = PlayRound(state);
+      this.RunCallbacks(this.roundDone, state);
+      if (keepGoing) {
+        this.PlayAgainUntilDone(state);
+      } else {
+        this.RunCallbacks(this.gameDone, state);
+      }
+    }, 0);
+  }
+
+  RunCallbacks(funcs: GameCallback[], state: blocks.GameState) {
+    for (const func of funcs) {
+      func(state);
+    }
+  }
+
+  OnGameStart(...funcs: GameCallback[]) {
+    this.gameStart.push(...funcs);
+  }
+
+  OnRoundDone(...funcs: GameCallback[]) {
+    this.roundDone.push(...funcs);
+  }
+
+  OnGameDone(...funcs: GameCallback[]) {
+    this.gameDone.push(...funcs);
+  }
+}
+
 function Play(state: blocks.GameState, player: blocks.Player, input: blocks.PlayerInputs): boolean {
   const decision = player.MakeMove(input);
   if (decision instanceof blocks.Move) {
@@ -50,33 +106,6 @@ function FirstRound(state: blocks.GameState) {
     keepGoing = Play(state, player, input) || keepGoing;
   }
   return keepGoing;
-}
-
-function PlayAgainUntilDone(state: blocks.GameState, onDone: WhenGameDoneFunc) {
-  // Using setTimeout here gives the UI a chance to redraw during the game.
-  setTimeout(() => {
-    console.log('Next round');
-    const keepGoing = PlayRound(state);
-    ui.Draw(state);
-    if (keepGoing) {
-      PlayAgainUntilDone(state, onDone);
-    } else {
-      onDone(state);
-    }
-  }, 0);
-}
-
-type WhenGameDoneFunc = (state: blocks.GameState) => void;
-const kDoNothing = () => {};
-
-function PlayGame(players: blocks.Player[], onDone: WhenGameDoneFunc) {
-  const state = new blocks.GameState(players);
-
-  console.log('Round 1');
-  FirstRound(state);
-  ui.Draw(state);
-
-  PlayAgainUntilDone(state, onDone);
 }
 
 // Ranking points drawn from the source of all truth, Mario Kart 64.
@@ -123,15 +152,30 @@ function MakePlayers(agents: blocks.Agent[]): blocks.Player[] {
   return players;
 }
 
+type TournamentCallback = (t: Tournament) => void;
+
 export class Tournament {
   agents: blocks.Agent[];
   results: GameResult[];
   private rounds: number;
+  private tournamentStart: TournamentCallback[];
+  private onResult: TournamentCallback[];
+  private gameStart: GameCallback[];
+  private roundDone: GameCallback[];
 
   constructor(agents: blocks.Agent[], rounds: number) {
     this.agents = agents;
     this.rounds = rounds;
     this.results = [];
+    this.tournamentStart = [];
+    this.onResult = [];
+    this.gameStart = [];
+    this.roundDone = [];
+  }
+
+  RunTournament() {
+    this.RunCallbacks(this.tournamentStart);
+    this.PlayGame();
   }
 
   PlayGame() {
@@ -140,55 +184,80 @@ export class Tournament {
     util.ShuffleArray(gameAgents);
     const players = MakePlayers(gameAgents);
 
-    this.DrawTournament();
-    PlayGame(players, (state: blocks.GameState) => this.WhenGameDone(state));
+    const game = new Game();
+    game.OnGameStart(...this.gameStart);
+    game.OnRoundDone(...this.roundDone);
+    game.OnGameDone((state: blocks.GameState) => this.WhenGameDone(state));
+    game.Play(players);
   }
 
   WhenGameDone(state: blocks.GameState) {
     const scores = blocks.GetScores(state);
     this.results.push(PlayerScoresToGameResult(state.players, scores));
-    this.DrawTournament();
+    this.RunCallbacks(this.onResult);
     if (this.results.length < this.rounds) {
       this.PlayGame();
     }
   }
 
-  DrawTournament() {
-    const total: {[id: string]: number} = {};
-    const rows = [];
-  
-    let header = '<thead><th>Game</th>';
-    for (const agent of this.agents) {
-      const desc = agent.Description();
-      total[desc] = 0;
-  
-      header += '<th>' + desc + '</th>';
+  RunCallbacks(funcs: TournamentCallback[]) {
+    for (const func of funcs) {
+      func(this);
     }
-    rows.push(header + '</thead>');
-  
-    for (let i = 0; i < this.results.length; i++) {
-      const result = this.results[i];
-  
-      let row = '<tr><td>#' + (i + 1) + '</td>';
-      for (const agent of this.agents) {
-        const desc = agent.Description();
-        const rank = result.agentRanking[desc];
-        const score = result.agentScores[desc];
-        const points = kRankingPoints.Get(rank);
-        total[desc] += points;
-        row += '<td>' + kRankingDesc.Get(rank) + ' (' + score + ') -> ' + points + ' pts</td>';
-      }
-      rows.push(row + '</tr>');
-    }
-  
-    let summary = '<tr><td></td>';
-    for (const agent of this.agents) {
-      summary += '<td>' + total[agent.Description()] + '</td>';
-    }
-    rows.push(summary + '</tr>');
-  
-    $('#tournament-score').html(rows.join(''));
   }
+
+  OnTournamentStart(...funcs: TournamentCallback[]) {
+    this.tournamentStart.push(...funcs);
+  }
+
+  OnResult(...funcs: TournamentCallback[]) {
+    this.onResult.push(...funcs);
+  }
+
+  OnGameStart(...funcs: GameCallback[]) {
+    this.gameStart.push(...funcs);
+  }
+
+  OnRoundDone(...funcs: GameCallback[]) {
+    this.roundDone.push(...funcs);
+  }
+}
+
+function DrawTournament(t: Tournament) {
+  const total: {[id: string]: number} = {};
+  const rows = [];
+
+  let header = '<thead><th>Game</th>';
+  for (const agent of t.agents) {
+    const desc = agent.Description();
+    total[desc] = 0;
+
+    header += '<th>' + desc + '</th>';
+  }
+  rows.push(header + '</thead>');
+
+  for (let i = 0; i < t.results.length; i++) {
+    const result = t.results[i];
+
+    let row = '<tr><td>#' + (i + 1) + '</td>';
+    for (const agent of t.agents) {
+      const desc = agent.Description();
+      const rank = result.agentRanking[desc];
+      const score = result.agentScores[desc];
+      const points = kRankingPoints.Get(rank);
+      total[desc] += points;
+      row += '<td>' + kRankingDesc.Get(rank) + ' (' + score + ') -> ' + points + ' pts</td>';
+    }
+    rows.push(row + '</tr>');
+  }
+
+  let summary = '<tr><td></td>';
+  for (const agent of t.agents) {
+    summary += '<td>' + total[agent.Description()] + '</td>';
+  }
+  rows.push(summary + '</tr>');
+
+  $('#tournament-score').html(rows.join(''));
 }
 
 function Main() {
@@ -200,7 +269,11 @@ function Main() {
   ];
 
   const t = new Tournament(agents, 10);
-  t.PlayGame();
+  t.OnTournamentStart(DrawTournament);
+  t.OnGameStart(ui.Draw);
+  t.OnRoundDone(ui.Draw);
+  t.OnResult(DrawTournament);
+  t.RunTournament();
 }
 
 $(document).ready(Main);
