@@ -53,7 +53,17 @@ function DrawRemainingPieces(player: blocks.Player) {
     pieces.push(DrawPiece(piece));
   }
 
-  const playerUI = $('#pieces-player' + player.id);
+  const playerUI = $('#pieces-remaining-player' + player.id);
+  playerUI.html(pieces.join(''));
+}
+
+function DrawPiecesPlayed(player: blocks.Player) {
+  const pieces = [];
+  for (const move of player.moves) {
+    pieces.push(DrawPiece(move.piece));
+  }
+
+  const playerUI = $('#pieces-played-player' + player.id);
   playerUI.html(pieces.join(''));
 }
 
@@ -77,6 +87,7 @@ function DrawPlayerTable(state: blocks.GameState) {
     }
 
     DrawRemainingPieces(player);
+    DrawPiecesPlayed(player);
   }
 }
 
