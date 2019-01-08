@@ -4,16 +4,10 @@ import * as pieces from './pieces';
 import * as util from './util';
 
 // Ranking points drawn from the source of all truth, Mario Kart 64.
-export const kRankingPoints = new util.SimpleMap([[1, 9], [2, 6], [3, 3], [4, 1]]);
+const kRankingPoints = new util.SimpleMap([[1, 9], [2, 6], [3, 3], [4, 1]]);
 
-class GameResult {
-  agentScores: AgentScores;
-  agentRanking: AgentRanking;
-
-  constructor(scores: AgentScores, ranking: AgentRanking) {
-    this.agentScores = scores;
-    this.agentRanking = ranking;
-  }
+export function GetRankingPoints(rank: number): number {
+  return kRankingPoints.Get(rank);
 }
 
 type AgentRanking = {
@@ -23,6 +17,18 @@ type AgentRanking = {
 type AgentScores = {
   [id: string]: number
 };
+
+class GameResult {
+  // The score of each agent in a single game.
+  agentScores: AgentScores;
+  // The rank of each agent (1st, 2nd, 3rd, 4th) in a single game.
+  agentRanking: AgentRanking;
+
+  constructor(scores: AgentScores, ranking: AgentRanking) {
+    this.agentScores = scores;
+    this.agentRanking = ranking;
+  }
+}
 
 function PlayerScoresToGameResult(players: blocks.Player[], pScores: blocks.Scores): GameResult {
   const pRanking = blocks.ScoresToRanking(pScores);
@@ -51,6 +57,9 @@ type TournamentCallback = (t: Tournament) => void;
 export class Tournament {
   agents: blocks.Agent[];
   results: GameResult[];
+  // Number of ranking points accumulated by each agent during the tournament.
+  agentPoints: util.NumberMap<string>;
+
   private rounds: number;
   private tournamentStart: TournamentCallback[];
   private onResult: TournamentCallback[];
@@ -60,11 +69,16 @@ export class Tournament {
   constructor(agents: blocks.Agent[], rounds: number) {
     this.agents = agents;
     this.rounds = rounds;
+    this.agentPoints = new util.NumberMap();
     this.results = [];
     this.tournamentStart = [];
     this.onResult = [];
     this.gameStart = [];
     this.roundDone = [];
+
+    for (const agent of agents) {
+      this.agentPoints.set(agent.Description(), 0);
+    }
   }
 
   RunTournament() {
@@ -87,8 +101,17 @@ export class Tournament {
 
   WhenGameDone(state: blocks.GameState) {
     const scores = blocks.GetScores(state);
-    this.results.push(PlayerScoresToGameResult(state.players, scores));
+    const result = PlayerScoresToGameResult(state.players, scores);
+
+    for (const agent of this.agents) {
+      const desc = agent.Description();
+      const points = GetRankingPoints(result.agentRanking[desc]);
+      this.agentPoints.Add(desc, points);
+    }
+
+    this.results.push(result);
     this.RunCallbacks(this.onResult);
+
     if (this.results.length < this.rounds) {
       this.PlayGame();
     }
