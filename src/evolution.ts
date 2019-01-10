@@ -91,7 +91,7 @@ class Darwin {
     let maxPoints = 0;
     let bestAgent = null;
 
-    // Update lifetime statistics.    
+    // Update lifetime statistics.
     for (const [desc, points] of t.agentPoints.entries()) {
       const record = this.agents.get(desc);
       if (record === undefined) {
@@ -113,10 +113,12 @@ class Darwin {
     records.sort(CompareAgentRecords);
     records.splice(30);
     this.agents.clear();
-    console.log("Results after N(rounds)=" + this.rounds);
+    console.log('Results after N(rounds)=' + this.rounds);
     for (const record of records) {
       this.agents.set(record.agent.Description(), record);
-      console.log("Agent " + record.agent.Description() + " => (" + record.totalRankingPoints + " / " + record.gamesPlayed + ") = " + record.MeanRanking());
+      console.log(
+          'Agent ' + record.agent.Description() + ' => (' + record.totalRankingPoints + ' / ' + record.gamesPlayed +
+          ') = ' + record.MeanRanking());
     }
 
     // Do it again.
@@ -130,7 +132,7 @@ class Darwin {
     // The winner of the last round always plays again.
     const generation = [bestAgent];
     const seen = new Set<string>([bestAgent.Description()]);
-    
+
     // Two random agents from the top quartile of agents we're tracking.
     // We don't want to inflate agents' ranking points by having them play weak opponents.
     // The top-ranked agents should prove their value against comperable opponents.
@@ -168,7 +170,7 @@ class Darwin {
   }
 }
 
-export function EvolutionMain() {
+export function Main() {
   const agents = [
     new agent.HardestFirstAgent(),
     new agent.RankingAgent([2.5, 1.4, 0.4]),  // Evolved

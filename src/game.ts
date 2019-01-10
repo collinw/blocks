@@ -70,7 +70,7 @@ function Play(state: blocks.GameState, player: blocks.Player, input: blocks.Play
     state.GiveUp(player);
     return false;
   } else {
-    throw new Error("Player returned an unexpected value");
+    throw new Error('Player returned an unexpected value');
   }
 }
 

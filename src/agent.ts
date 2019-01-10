@@ -18,12 +18,11 @@ export function GetRoots(pieceForm: pieces.PieceForm): util.Coord[] {
 
 // Conceptually, this returns a set, but an array is faster, and this is a
 // core part of the game.
-export function GenerateMove(
-    start: util.Coord, root: util.Coord, pieceForm: pieces.PieceForm): util.Coord[] {
+export function GenerateMove(start: util.Coord, root: util.Coord, pieceForm: pieces.PieceForm): util.Coord[] {
   const mOffset = start[0] - root[0];
   const nOffset = start[1] - root[1];
 
-  const cells : util.Coord[] = [];
+  const cells: util.Coord[] = [];
   for (let m = 0; m < pieceForm.M; m++) {
     for (let n = 0; n < pieceForm.N; n++) {
       if (pieceForm.Get(m, n) > 0) {
@@ -37,7 +36,7 @@ export function GenerateMove(
 export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Piece): blocks.Move[] {
   const valid = [];
   let evals = 0;
-  const rejections : {[key: string]: number} = {};
+  const rejections: {[key: string]: number} = {};
 
   for (const start of inputs.startPoints) {
     for (const variant of piece.variants) {
@@ -63,7 +62,7 @@ export class QuitterAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "Quitter";
+    return 'Quitter';
   }
 }
 
@@ -85,7 +84,7 @@ export class RandomAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "Random";
+    return 'Random';
   }
 }
 
@@ -108,7 +107,7 @@ export class BiggestFirstAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "BiggestFirst";
+    return 'BiggestFirst';
   }
 }
 
@@ -144,7 +143,7 @@ export class HardestFirstAgent implements blocks.Agent {
   }
 
   Description(): string {
-    return "HardestFirst";
+    return 'HardestFirst';
   }
 }
 

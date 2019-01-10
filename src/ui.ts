@@ -77,7 +77,7 @@ function DrawPlayerTable(state: blocks.GameState) {
     elem.text(scores.Get(player.id));
 
     const desc = player.agent.Description();
-    $("#pieces-remaining .player" + player.id + " > .player-desc").text(desc);
+    $('#pieces-remaining .player' + player.id + ' > .player-desc').text(desc);
 
     const inputs = blocks.GetPlayerInputs(state, player);
     for (const coord of inputs.startPoints) {

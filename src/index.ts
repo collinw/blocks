@@ -2,10 +2,10 @@ import $ from 'jquery';
 
 import * as agent from './agent';
 import * as blocks from './blocks';
+import * as evolution from './evolution';
 import * as game from './game';
 import * as ui from './ui';
 import * as util from './util';
-import { EvolutionMain } from './evolution';
 
 function SingleGame() {
   const agents = [
@@ -27,7 +27,7 @@ function SingleGame() {
 
 function Main() {
   if (document.getElementById('evolution')) {
-    EvolutionMain();
+    evolution.Main();
   } else {
     SingleGame();
   }

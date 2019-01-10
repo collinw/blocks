@@ -96,8 +96,7 @@ export function MakePlayers(agents: Agent[]): Player[] {
 }
 
 // A mapping from player ID to score in a single game.
-export class Scores extends util.NumberMap<number> {
-}
+export class Scores extends util.NumberMap<number> {}
 
 export function GetScores(state: GameState): Scores {
   const scores = new Scores([[1, 0], [2, 0], [3, 0], [4, 0]]);
@@ -127,8 +126,7 @@ export function GetScores(state: GameState): Scores {
 
 // A mapping of player ID to rank number. If there is a tie, multiple players
 // may have the same rank.
-export class Ranking extends util.NumberMap<number> {
-}
+export class Ranking extends util.NumberMap<number> {}
 
 export function ScoresToRanking(pScores: Scores): Ranking {
   const scores: Array<[number, number]> = [];

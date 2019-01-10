@@ -221,7 +221,7 @@ export class SimpleMap<T, U> extends Map<T, U> {
   Get(key: T): U {
     const val = this.get(key);
     if (val === undefined) {
-      throw new Error("Unknown key: " + key);
+      throw new Error('Unknown key: ' + key);
     }
     return val;
   }
@@ -229,7 +229,7 @@ export class SimpleMap<T, U> extends Map<T, U> {
 
 // A map type with a simplified interface for incrementing numeric
 // map values.
-export class NumberMap<T> extends SimpleMap<T, number>{
+export class NumberMap<T> extends SimpleMap<T, number> {
   Add(key: T, delta: number) {
     const val = this.Get(key) + delta;
     this.set(key, val);
