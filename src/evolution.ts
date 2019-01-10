@@ -54,8 +54,12 @@ class AgentRecord {
   }
 }
 
-function CompareAgentRecords(a1: AgentRecord, a2: AgentRecord): number {
+function SortHighestMeanRanking(a1: AgentRecord, a2: AgentRecord): number {
   return a2.MeanRanking() - a1.MeanRanking();
+}
+
+function SortLeastPlayed(a1: AgentRecord, a2: AgentRecord): number {
+  return a1.gamesPlayed - a2.gamesPlayed;
 }
 
 class Darwin {
@@ -110,7 +114,7 @@ class Darwin {
 
     // Sort the list and prune the low performers.
     const records = Array.from(this.agents.values());
-    records.sort(CompareAgentRecords);
+    records.sort(SortHighestMeanRanking);
     records.splice(30);
     this.agents.clear();
     console.log('Results after N(rounds)=' + this.rounds);
@@ -127,6 +131,12 @@ class Darwin {
   }
 
   MakeGeneration(records: AgentRecord[], bestAgent: blocks.Agent): blocks.Agent[] {
+    if (this.rounds % 5 === 0) {
+      console.log("Picking players with the least experience");
+      records.sort(SortLeastPlayed);
+      return records.slice(0, 4).map((r) => r.agent);
+    }
+
     const topAgent = records[0].agent;
 
     // The winner of the last round always plays again.
