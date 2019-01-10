@@ -20,14 +20,10 @@ function RandomWeights(): number[] {
   return weights;
 }
 
-function Sample<T>(a: T[]): T {
-  return a[Math.floor(Math.random() * a.length)];
-}
-
 function MutateAllWeights(weights: number[]): number[] {
   const mutated: number[] = [];
   for (const weight of weights) {
-    const mutation = Math.random() * 2 * Sample([1, -1]);
+    const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
     mutated.push(TruncateNumber(weight + mutation));
   }
   return mutated;
@@ -37,7 +33,7 @@ function MutateWeights(weights: number[]): number[] {
   const idx = Math.floor(Math.random() * weights.length);
   const newWeights = Array.of(...weights);
 
-  const mutation = Math.random() * 2 * Sample([1, -1]);
+  const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
   newWeights[idx] = TruncateNumber(newWeights[idx] + mutation);
   return newWeights;
 }
