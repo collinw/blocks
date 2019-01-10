@@ -87,6 +87,14 @@ export class GameState {
   }
 }
 
+export function MakePlayers(agents: Agent[]): Player[] {
+  const players = [];
+  for (let i = 0; i < 4; i++) {
+    players.push(new Player(i + 1, agents[i], pieces.GetPieces()));
+  }
+  return players;
+}
+
 // A mapping from player ID to score in a single game.
 export class Scores extends util.NumberMap<number> {
 }

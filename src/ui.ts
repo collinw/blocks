@@ -115,7 +115,7 @@ export function DrawTournament(t: tournament.Tournament) {
       const desc = agent.Description();
       const rank = result.agentRanking[desc];
       const score = result.agentScores[desc];
-      const points = tournament.GetRankingPoints(rank);
+      const points = result.agentPoints[desc];
       row += '<td>' + kRankingDesc.Get(rank) + ' (' + score + ') -> ' + points + ' pts</td>';
     }
     rows.push(row + '</tr>');

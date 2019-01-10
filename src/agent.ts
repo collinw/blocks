@@ -162,7 +162,7 @@ function ApplyMove(board: util.Matrix, move: blocks.Move, playerId: number): uti
 }
 
 export class RankingAgent implements blocks.Agent {
-  private weights: number[];
+  weights: number[];
 
   constructor(weights: number[]) {
     this.weights = weights;

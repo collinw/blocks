@@ -6,10 +6,6 @@ import * as util from './util';
 // Ranking points drawn from the source of all truth, Mario Kart 64.
 const kRankingPoints = new util.SimpleMap([[1, 9], [2, 6], [3, 3], [4, 1]]);
 
-export function GetRankingPoints(rank: number): number {
-  return kRankingPoints.Get(rank);
-}
-
 type AgentRanking = {
   [id: string]: number
 };
@@ -18,15 +14,22 @@ type AgentScores = {
   [id: string]: number
 };
 
+type AgentPoints = {
+  [id: string]: number
+};
+
 class GameResult {
   // The score of each agent in a single game.
   agentScores: AgentScores;
   // The rank of each agent (1st, 2nd, 3rd, 4th) in a single game.
   agentRanking: AgentRanking;
+  // The number of ranking points that each agent received from a single game.
+  agentPoints: AgentPoints;
 
-  constructor(scores: AgentScores, ranking: AgentRanking) {
+  constructor(scores: AgentScores, ranking: AgentRanking, points: AgentPoints) {
     this.agentScores = scores;
     this.agentRanking = ranking;
+    this.agentPoints = points;
   }
 }
 
@@ -35,21 +38,20 @@ function PlayerScoresToGameResult(players: blocks.Player[], pScores: blocks.Scor
 
   const aRanking: AgentRanking = {};
   const aScores: AgentScores = {};
+  const aPoints: AgentPoints = {};
   for (const player of players) {
+    const score = pScores.Get(player.id);
+    // A perfect game is a better kind of win.
+    const bonus = score === 109 ? 2 : 0;
+    const rank = pRanking.Get(player.id);
+
     const agentDesc = player.agent.Description();
-    aScores[agentDesc] = pScores.Get(player.id);
-    aRanking[agentDesc] = pRanking.Get(player.id);
+    aScores[agentDesc] = score;
+    aRanking[agentDesc] = rank;
+    aPoints[agentDesc] = kRankingPoints.Get(rank) + bonus;
   }
 
-  return new GameResult(aScores, aRanking);
-}
-
-function MakePlayers(agents: blocks.Agent[]): blocks.Player[] {
-  const players = [];
-  for (let i = 0; i < 4; i++) {
-    players.push(new blocks.Player(i + 1, agents[i], pieces.GetPieces()));
-  }
-  return players;
+  return new GameResult(aScores, aRanking, aPoints);
 }
 
 type TournamentCallback = (t: Tournament) => void;
@@ -62,6 +64,7 @@ export class Tournament {
 
   private rounds: number;
   private tournamentStart: TournamentCallback[];
+  private tournamentDone: TournamentCallback[];
   private onResult: TournamentCallback[];
   private gameStart: game.GameCallback[];
   private roundDone: game.GameCallback[];
@@ -72,6 +75,7 @@ export class Tournament {
     this.agentPoints = new util.NumberMap();
     this.results = [];
     this.tournamentStart = [];
+    this.tournamentDone = [];
     this.onResult = [];
     this.gameStart = [];
     this.roundDone = [];
@@ -90,7 +94,7 @@ export class Tournament {
     // Have the agents play in different order each round.
     const gameAgents = Array.from(this.agents);
     util.ShuffleArray(gameAgents);
-    const players = MakePlayers(gameAgents);
+    const players = blocks.MakePlayers(gameAgents);
 
     const g = new game.Game();
     g.OnGameStart(...this.gameStart);
@@ -105,7 +109,7 @@ export class Tournament {
 
     for (const agent of this.agents) {
       const desc = agent.Description();
-      const points = GetRankingPoints(result.agentRanking[desc]);
+      const points = result.agentPoints[desc];
       this.agentPoints.Add(desc, points);
     }
 
@@ -114,6 +118,8 @@ export class Tournament {
 
     if (this.results.length < this.rounds) {
       this.PlayGame();
+    } else {
+      this.RunCallbacks(this.tournamentDone);
     }
   }
 
@@ -129,6 +135,10 @@ export class Tournament {
 
   OnResult(...funcs: TournamentCallback[]) {
     this.onResult.push(...funcs);
+  }
+
+  OnTournamentDone(...funcs: TournamentCallback[]) {
+    this.tournamentDone.push(...funcs);
   }
 
   OnGameStart(...funcs: game.GameCallback[]) {
