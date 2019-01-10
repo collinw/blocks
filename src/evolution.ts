@@ -3,6 +3,10 @@ import * as tournament from './tournament';
 import * as ui from './ui';
 import * as util from './util';
 
+function TruncateNumber(n: number): number {
+  return Number(n.toFixed(1));
+}
+
 function RandomInRange(a: number, b: number): number {
   return Math.random() * (b - a) + a;
 }
@@ -10,7 +14,7 @@ function RandomInRange(a: number, b: number): number {
 function RandomWeights(): number[] {
   const weights: number[] = [];
   for (let i = 0; i < 3; i++) {
-    weights.push(Number(RandomInRange(-2, 2).toFixed(1)));
+    weights.push(TruncateNumber(RandomInRange(-2, 2)));
   }
   return weights;
 }
@@ -23,7 +27,7 @@ function MutateWeights(weights: number[]): number[] {
   const mutated: number[] = [];
   for (const weight of weights) {
     const mutation = Math.random() * 2 * Sample([1, -1]);
-    mutated.push(Number((weight + mutation).toFixed(1)));
+    mutated.push(TruncateNumber(weight + mutation));
   }
   return mutated;
 }
