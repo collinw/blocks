@@ -20,7 +20,6 @@ export class Game {
     const state = new blocks.GameState(players);
     this.RunCallbacks(this.gameStart, state);
 
-    console.log('Round 1');
     FirstRound(state);
     this.RunCallbacks(this.roundDone, state);
     this.PlayAgainUntilDone(state);
@@ -29,7 +28,6 @@ export class Game {
   PlayAgainUntilDone(state: blocks.GameState) {
     // Using setTimeout here gives the UI a chance to redraw during the game.
     setTimeout(() => {
-      console.log('Next round');
       const keepGoing = PlayRound(state);
       this.RunCallbacks(this.roundDone, state);
       if (keepGoing) {
@@ -69,7 +67,6 @@ function Play(state: blocks.GameState, player: blocks.Player, input: blocks.Play
     state.ApplyMove(player, decision);
     return true;
   } else if (decision instanceof blocks.GiveUp) {
-    console.log("Player " + player.id + " gave up!");
     state.GiveUp(player);
     return false;
   } else {

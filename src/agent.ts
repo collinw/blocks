@@ -53,11 +53,6 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Pi
       }
     }
   }
-  const pcnt = Math.round(valid.length / evals * 100);
-  console.log('Evaluated ' + evals + ' possible moves, pruned to ' + valid.length + ' (' + pcnt + '% legal)');
-  for (const rejection of Object.keys(rejections)) {
-    console.log('Rejection: ' + rejection + ' = ' + rejections[rejection]);
-  }
   return valid;
 }
 
