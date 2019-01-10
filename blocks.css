@@ -1,0 +1,99 @@
+/* Common styling */
+.player1 {
+  background-color: red;
+}
+.player2 {
+  background-color: blue;
+}
+.player3 {
+  background-color: gold;
+}
+.player4 {
+  background-color: green;
+}
+
+/* Styling for the single-game UI */
+#game {
+  width: 600px;
+}
+#board {
+  text-align: center;
+  border: 1px solid black;
+  border-spacing: 0px;
+}
+#board tr {
+  margin: 0px;
+  padding: 0px;
+}
+#board td {
+  height: 20px;
+  width: 20px;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid grey;
+}
+.possible-next {
+  opacity: 0.1;
+}
+.player-desc {
+  text-align: center;
+  font-size: 8pt;
+}
+#pieces-remaining {
+  margin-top: 15px;
+  border-spacing: 0px;
+}
+#pieces-remaining > tbody > tr > td {
+  border: 1px solid grey;
+  margin: 0px;
+  padding: 10px;
+}
+#pieces-remaining .player-score {
+  text-align: center;
+  font-size: 20pt;
+}
+#pieces-remaining .piece {
+  float: left;
+  border-spacing: 0px;
+  padding-left: 5px;
+}
+#pieces-remaining .piece tr {
+  margin: 0px;
+  padding: 0px;
+}
+#pieces-remaining .piece td {
+  height: 10px;
+  width: 10px;
+  margin: 0px;
+  padding: 0px;
+}
+#pieces-remaining .piece td.piece-unit {
+  background-color: black;
+}
+
+/* Styling for the tournament display */
+#tournament-score {
+  position: relative;
+  border: 1px solid grey;
+  border-spacing: 0px;
+}
+#tournament-score th {
+  text-align: center;
+  border: 1px solid grey;
+  margin: 0px;
+  padding: 10px;
+}
+#tournament-score td {
+  text-align: center;
+  border: 1px solid grey;
+  margin: 0px;
+  padding: 5px;
+}
+#game-tournament-results {
+  display: flex;
+}
+
+/* Styling specific to the evolution tool */
+#evolution {
+  display: flex;
+}
