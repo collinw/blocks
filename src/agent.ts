@@ -161,9 +161,13 @@ function ApplyMove(board: util.Matrix, move: blocks.Move, playerId: number): uti
 }
 
 export class RankingAgent implements blocks.Agent {
+  static kNumWeights = 3;
   weights: number[];
 
   constructor(weights: number[]) {
+    if (weights.length !== RankingAgent.kNumWeights) {
+      throw new Error('Wrong number of weights!');
+    }
     this.weights = weights;
   }
 
