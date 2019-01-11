@@ -36,7 +36,6 @@ export function GenerateMove(start: util.Coord, root: util.Coord, pieceForm: pie
 export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Piece): blocks.Move[] {
   const valid = [];
   let evals = 0;
-  const rejections: {[key: string]: number} = {};
 
   for (const start of inputs.startPoints) {
     for (const variant of piece.variants) {
@@ -45,7 +44,6 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Pi
         const cells = GenerateMove(start, root, variant);
         const rejection = inputs.ValidateMove(cells);
         if (rejection) {
-          rejections[rejection] = (rejections[rejection] || 0) + 1;
           continue;
         }
         valid.push(new blocks.Move(piece, cells));
