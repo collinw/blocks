@@ -54,32 +54,49 @@ export class Player {
   MakeMove(inputs: PlayerInputs): Move|GiveUp {
     return this.agent.MakeMove(inputs, this.pieces);
   }
+
+  // Return a version of this player's state after having made the given move.
+  AfterMove(move: Move): Player {
+    const newPieces = this.pieces.filter((p) => p !== move.piece);
+    if (newPieces.length === this.pieces.length) {
+      throw new Error('Piece is not present in the list!');
+    }
+
+    const newPlayer = new Player(this.id, this.agent, newPieces);
+    newPlayer.moves = Array.from(this.moves);
+    newPlayer.moves.push(move);
+    return newPlayer;
+  }
 }
 
 export function NewBoard(): util.Matrix {
   return util.Matrix.Zero(20, 20);
 }
 
+// Applies the given move to the board, modifying the board in-place.
+export function ApplyMove(board: util.Matrix, move: Move, playerId: number) {
+  for (const [m, n] of move.cells) {
+    board.Set(m, n, playerId);
+  }
+}
+
 export class GameState {
   board: util.Matrix;
   players: Player[];
 
-  constructor(players: Player[]) {
-    this.board = NewBoard();
+  constructor(board: util.Matrix, players: Player[]) {
+    this.board = board;
     this.players = players;
   }
 
-  ApplyMove(player: Player, move: Move) {
-    const idx = player.pieces.indexOf(move.piece);
-    if (idx === -1) {
-      throw new Error('Piece is not present in the list!');
-    }
-    player.pieces.splice(idx, 1);
-    player.moves.push(move);
+  static NewGame(players: Player[]) {
+    return new GameState(NewBoard(), players);
+  }
 
-    for (const cell of move.cells) {
-      this.board.Set(cell[0], cell[1], player.id);
-    }
+  // Modifies the GameState in-place, modifying both the given player and the board.
+  ApplyMove(player: Player, move: Move) {
+    this.players[player.id - 1] = player.AfterMove(move);
+    ApplyMove(this.board, move, player.id);
   }
 
   GiveUp(player: Player) {

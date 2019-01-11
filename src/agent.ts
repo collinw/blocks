@@ -152,11 +152,9 @@ function CountStartPoints(board: util.Matrix, playerId: number): number {
   return startPoints.Size();
 }
 
-function ApplyMove(board: util.Matrix, move: blocks.Move, playerId: number): util.Matrix {
+function GetBoardAfterMove(board: util.Matrix, move: blocks.Move, playerId: number): util.Matrix {
   const m = board.Copy();
-  for (const c of move.cells) {
-    m.Set(c[0], c[1], playerId);
-  }
+  blocks.ApplyMove(m, move, playerId);
   return m;
 }
 
@@ -192,7 +190,7 @@ export class RankingAgent implements blocks.Agent {
   }
 
   ScoreMove(currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
-    const board = ApplyMove(currBoard, move, playerId);
+    const board = GetBoardAfterMove(currBoard, move, playerId);
 
     let points = 0;
     for (let m = 0; m < board.M; m++) {

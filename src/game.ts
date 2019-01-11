@@ -17,7 +17,7 @@ export class Game {
   }
 
   Play(players: blocks.Player[]) {
-    const state = new blocks.GameState(players);
+    const state = blocks.GameState.NewGame(players);
     this.RunCallbacks(this.gameStart, state);
 
     FirstRound(state);
