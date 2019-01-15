@@ -71,6 +71,18 @@ export class PieceFormSet extends util.MatrixSet {
   }
 }
 
+function CountPoints(canonical: PieceForm): number {
+  let points = 0;
+  for (let m = 0; m < canonical.M; m++) {
+    for (let n = 0; n < canonical.N; n++) {
+      if (canonical.Get(m, n) > 0) {
+        points++;
+      }
+    }
+  }
+  return points;
+}
+
 // Pieces are represented in a canonical form with multiple variants,
 // each corresponding to a way of rotating/flipping the canonical form.
 // We generate these once and use them throughout in order to simplify
@@ -78,10 +90,12 @@ export class PieceFormSet extends util.MatrixSet {
 export class Piece {
   readonly canonical: PieceForm;
   readonly variants: PieceFormSet;
+  readonly points: number;
 
   constructor(canonical: PieceForm, variants: PieceFormSet) {
     this.canonical = canonical;
     this.variants = variants;
+    this.points = CountPoints(canonical);
   }
 
   IsSingleSquare(): boolean {
