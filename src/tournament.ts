@@ -68,6 +68,7 @@ export class Tournament {
   private onResult: TournamentCallback[];
   private gameStart: game.GameCallback[];
   private roundDone: game.GameCallback[];
+  private gameDone: game.GameCallback[];
 
   constructor(agents: blocks.Agent[], rounds: number) {
     this.agents = agents;
@@ -79,6 +80,7 @@ export class Tournament {
     this.onResult = [];
     this.gameStart = [];
     this.roundDone = [];
+    this.gameDone = [];
 
     for (const agent of agents) {
       this.agentPoints.set(agent.Description(), 0);
@@ -99,6 +101,7 @@ export class Tournament {
     const g = new game.Game();
     g.OnGameStart(...this.gameStart);
     g.OnRoundDone(...this.roundDone);
+    g.OnGameDone(...this.gameDone);
     g.OnGameDone((state: blocks.GameState) => this.WhenGameDone(state));
     g.Play(players);
   }
@@ -147,5 +150,9 @@ export class Tournament {
 
   OnRoundDone(...funcs: game.GameCallback[]) {
     this.roundDone.push(...funcs);
+  }
+
+  OnGameDone(...funcs: game.GameCallback[]) {
+    this.gameDone.push(...funcs);
   }
 }
