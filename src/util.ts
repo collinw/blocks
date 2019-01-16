@@ -231,7 +231,7 @@ export class SimpleMap<T, U> extends Map<T, U> {
 // map values.
 export class NumberMap<T> extends SimpleMap<T, number> {
   Add(key: T, delta: number) {
-    const val = this.Get(key) + delta;
+    const val = (this.get(key) || 0) + delta;
     this.set(key, val);
   }
 }
