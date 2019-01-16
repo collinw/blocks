@@ -203,6 +203,19 @@ export class RankingAgent implements blocks.Agent {
     const newStartPoints = CountStartPoints(board, playerId);
     const delta = newStartPoints - oldStartPoints;
 
-    return points * this.weights[0] + delta * this.weights[1] + ScorePieceDifficulty(move.piece) * this.weights[2];
+    const values = [points, delta, ScorePieceDifficulty(move.piece)];
+    return ApplyWeights(values, this.weights);
   }
+}
+
+function ApplyWeights(values: number[], weights: number[]): number {
+  if (values.length !== weights.length) {
+    throw new Error('weights and values must have the same length');
+  }
+
+  let sum = 0;
+  for (let i = 0; i < values.length; i++) {
+    sum += values[i] * weights[i];
+  }
+  return sum;
 }
