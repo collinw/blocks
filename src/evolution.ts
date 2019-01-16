@@ -155,7 +155,12 @@ class Darwin {
     while (generation.length < 4) {
       let newWeights = [];
       if (topAgent instanceof agent.RankingAgent) {
-        newWeights = MutateWeights(topAgent.weights);
+        if (Math.random() < 0.25) {
+          // Attempt to add more diversity to the gene pool.
+          newWeights = MutateAllWeights(topAgent.weights);
+        } else {
+          newWeights = MutateWeights(topAgent.weights);
+        }
       } else {
         newWeights = RandomWeights(agent.RankingAgent.kNumWeights);
       }
