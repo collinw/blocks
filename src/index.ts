@@ -10,9 +10,9 @@ import * as util from './util';
 function SingleGame() {
   const agents = [
     new agent.BiggestFirstAgent(),
-    new agent.RankingAgent([2.5, 1.4, 0.4]),  // Evolved
-    new agent.RankingAgent([0, 1, 1]),        // Manual
-    new agent.RankingAgent([1, 1, 1]),        // Manual
+    new agent.RankingAgent([2.5, 1.4, 0.4, 1]),  // Evolved
+    new agent.RankingAgent([0, 1, 1, 1]),        // Manual
+    new agent.RankingAgent([1, 1, 1, 1]),        // Manual
   ];
 
   // Have the agents play in different order each round.

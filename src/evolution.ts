@@ -190,9 +190,9 @@ class Darwin {
 export function Main() {
   const agents = [
     new agent.HardestFirstAgent(),
-    new agent.RankingAgent([2.5, 1.4, 0.4]),  // Evolved
-    new agent.RankingAgent([0, 1, 1]),        // Manual
-    new agent.RankingAgent([1, 1, 1]),        // Manual
+    new agent.RankingAgent([2.5, 1.4, 0.4, 0]),  // Evolved
+    new agent.RankingAgent([0, 1, 1, 0]),        // Manual
+    new agent.RankingAgent([1, 1, 1, 0]),        // Manual
   ];
 
   const d = new Darwin();

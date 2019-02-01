@@ -157,7 +157,7 @@ function GetBoardAfterMove(board: util.Matrix, move: blocks.Move, playerId: numb
 }
 
 export class RankingAgent implements blocks.Agent {
-  static kNumWeights = 3;
+  static kNumWeights = 4;
   weights: number[];
 
   constructor(weights: number[]) {
@@ -199,11 +199,16 @@ export class RankingAgent implements blocks.Agent {
         }
       }
     }
+    // Attributes of the board.
     const oldStartPoints = CountStartPoints(currBoard, playerId);
     const newStartPoints = CountStartPoints(board, playerId);
     const delta = newStartPoints - oldStartPoints;
 
-    const values = [points, delta, ScorePieceDifficulty(move.piece)];
+    // Attributes of the piece to be played.
+    const pieceArea = ScorePieceArea(move.piece);
+    const interiorCells = CountInteriorCells(move.piece.canonical);
+
+    const values = [points, delta, pieceArea, interiorCells];
     return ApplyWeights(values, this.weights);
   }
 }
