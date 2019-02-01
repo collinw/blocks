@@ -4,18 +4,10 @@ import * as tournament from './tournament';
 import * as ui from './ui';
 import * as util from './util';
 
-function TruncateNumber(n: number): number {
-  return Number(n.toFixed(1));
-}
-
-function RandomInRange(a: number, b: number): number {
-  return Math.random() * (b - a) + a;
-}
-
 function RandomWeights(numWeights: number): number[] {
   const weights: number[] = [];
   for (let i = 0; i < numWeights; i++) {
-    weights.push(TruncateNumber(RandomInRange(-2, 2)));
+    weights.push(util.TruncateNumber(util.RandomInRange(-2, 2)));
   }
   return weights;
 }
@@ -24,7 +16,7 @@ function MutateAllWeights(weights: number[]): number[] {
   const mutated: number[] = [];
   for (const weight of weights) {
     const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
-    mutated.push(TruncateNumber(weight + mutation));
+    mutated.push(util.TruncateNumber(weight + mutation));
   }
   return mutated;
 }
@@ -34,7 +26,7 @@ function MutateWeights(weights: number[]): number[] {
   const newWeights = Array.of(...weights);
 
   const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
-  newWeights[idx] = TruncateNumber(newWeights[idx] + mutation);
+  newWeights[idx] = util.TruncateNumber(newWeights[idx] + mutation);
   return newWeights;
 }
 

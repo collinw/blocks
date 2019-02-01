@@ -214,6 +214,14 @@ export function ShuffleArray<T>(array: T[]) {
   }
 }
 
+export function RandomInRange(a: number, b: number): number {
+  return Math.random() * (b - a) + a;
+}
+
+export function TruncateNumber(n: number): number {
+  return Number(n.toFixed(1));
+}
+
 // A map type with a simplified Get() method: if the key is not found,
 // throw an exception. This avoids having to litter client code with
 // "if(x === undefined)" guards.
