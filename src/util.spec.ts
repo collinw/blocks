@@ -241,3 +241,18 @@ describe('RandomElement', () => {
     expect(() => util.RandomElement([])).to.throw('Array is empty');
   });
 });
+
+describe('TruncateNumber', () => {
+
+  it('should not corrupt shorter numbers', () => {
+    expect(util.TruncateNumber(1.3, 3)).to.equal(1.3);
+  });
+
+  it('should actually truncate', () => {
+    expect(util.TruncateNumber(1 / 3, 3)).to.equal(0.333);
+  });
+
+  it('should handle zero digits', () => {
+    expect(util.TruncateNumber(10 / 3, 0)).to.equal(3);
+  });
+});

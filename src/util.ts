@@ -218,8 +218,8 @@ export function RandomInRange(a: number, b: number): number {
   return Math.random() * (b - a) + a;
 }
 
-export function TruncateNumber(n: number): number {
-  return Number(n.toFixed(1));
+export function TruncateNumber(n: number, digits: number): number {
+  return Number(n.toFixed(digits));
 }
 
 // A map type with a simplified Get() method: if the key is not found,

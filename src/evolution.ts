@@ -7,7 +7,7 @@ import * as util from './util';
 function RandomWeights(numWeights: number): number[] {
   const weights: number[] = [];
   for (let i = 0; i < numWeights; i++) {
-    weights.push(util.TruncateNumber(util.RandomInRange(-2, 2)));
+    weights.push(util.TruncateNumber(util.RandomInRange(-2, 2), 1));
   }
   return weights;
 }
@@ -16,7 +16,7 @@ function MutateAllWeights(weights: number[]): number[] {
   const mutated: number[] = [];
   for (const weight of weights) {
     const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
-    mutated.push(util.TruncateNumber(weight + mutation));
+    mutated.push(util.TruncateNumber(weight + mutation, 1));
   }
   return mutated;
 }
@@ -26,7 +26,7 @@ function MutateWeights(weights: number[]): number[] {
   const newWeights = Array.of(...weights);
 
   const mutation = Math.random() * 2 * util.RandomElement([1, -1]);
-  newWeights[idx] = util.TruncateNumber(newWeights[idx] + mutation);
+  newWeights[idx] = util.TruncateNumber(newWeights[idx] + mutation, 1);
   return newWeights;
 }
 
@@ -114,7 +114,7 @@ class Darwin {
       this.agents.set(record.agent.Description(), record);
       console.log(
           'Agent ' + record.agent.Description() + ' => (' + record.totalRankingPoints + ' / ' + record.gamesPlayed +
-          ') = ' + record.MeanRanking());
+          ') = ' + util.TruncateNumber(record.MeanRanking(), 3));
     }
 
     // Do it again.
