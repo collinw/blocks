@@ -119,7 +119,7 @@ export function GenerateVariants(canonical: PieceForm): PieceFormSet {
 export function GetPieces(): Piece[] {
   const pieces = [];
   for (const form of kCanonicalPieces) {
-    const canonical = new util.Matrix(form);
+    const canonical = new PieceForm(form);
     pieces.push(new Piece(canonical, GenerateVariants(canonical)));
   }
   return pieces;
