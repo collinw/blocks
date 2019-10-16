@@ -74,7 +74,7 @@ function DrawPlayerTable(state: blocks.GameState) {
     const player = state.players[i];
 
     const elem = $('#player-score-' + player.id);
-    elem.text(scores.Get(player.id));
+    elem.text(scores.Get(player.id).points);
 
     const desc = player.agent.Description();
     $('#pieces-remaining .player' + player.id + ' > .player-desc').text(desc);

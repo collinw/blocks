@@ -112,29 +112,77 @@ export function MakePlayers(agents: Agent[]): Player[] {
   return players;
 }
 
+export class Score {
+  readonly id: number;
+  points: number;
+  pieces: number;
+
+  constructor(id: number) {
+    this.id = id;
+    this.points = 0;
+    this.pieces = 0;
+  }
+
+  Compare(other: Score) {
+    if (this.points === other.points) {
+      // Fewer pieces remaining is better than more pieces remaining.
+      return -(this.pieces - other.pieces);
+    }
+    // More points are better than fewer points.
+    return this.points - other.points;
+  }
+
+  Tie(other: Score): boolean {
+    return this.Compare(other) === 0;
+  }
+}
+
 // A mapping from player ID to score in a single game.
-export class Scores extends util.NumberMap<number> {}
+export class Scores {
+  private data: Map<number, Score>;
+
+  constructor() {
+    this.data = new Map();
+    for (let i = 1; i <= 4; i++) {
+      this.data.set(i, new Score(i));
+    }
+  }
+
+  Get(id: number): Score {
+    if (!this.data.has(id)) {
+      throw new Error('Unknown player ID: ' + id);
+    }
+    return this.data.get(id)!;
+  }
+
+  Entries(): Array<[number, Score]> {
+    return Array.from(this.data.entries());
+  }
+}
 
 export function GetScores(state: GameState): Scores {
-  const scores = new Scores([[1, 0], [2, 0], [3, 0], [4, 0]]);
+  const scores = new Scores();
 
   for (let m = 0; m < state.board.M; m++) {
     for (let n = 0; n < state.board.N; n++) {
       const val = state.board.Get(m, n);
       if (val > 0) {
-        scores.Add(val, 1);
+        scores.Get(val).points++;
       }
     }
   }
 
   // You get a bonus for playing all your pieces.
   for (const player of state.players) {
+    const score = scores.Get(player.id);
+    score.pieces = player.pieces.length;
+
     if (player.pieces.length === 0) {
-      scores.Add(player.id, 15);
+      score.points += 15;
       // You get a further bonus if the single square was the last piece you played.
       const lastMove = player.moves[player.moves.length - 1];
       if (lastMove.IsSingleSquare()) {
-        scores.Add(player.id, 5);
+        score.points += 5;
       }
     }
   }
@@ -146,23 +194,25 @@ export function GetScores(state: GameState): Scores {
 export class Ranking extends util.NumberMap<number> {}
 
 export function ScoresToRanking(pScores: Scores): Ranking {
-  const scores: Array<[number, number]> = [];
-  for (const [playerId, score] of pScores) {
+  const scores: Array<[number, Score]> = [];
+  for (const [playerId, score] of pScores.Entries()) {
     const score = pScores.Get(playerId);
     scores.push([playerId, score]);
   }
-  scores.sort((p1, p2) => p2[1] - p1[1]);
+  scores.sort((p1, p2) => p2[1].Compare(p1[1]));
 
   const ranking = new Ranking();
   let rank = 1;
-  let rankScore = -1;
+  let rankScore = undefined;
   let tie = 1;
   for (const [playerId, score] of scores) {
-    if (score === rankScore) {
-      tie++;
-    } else if (score < rankScore) {
-      rank += tie;
-      tie = 1;
+    if (rankScore) {
+      if (score.Tie(rankScore)) {
+        tie++;
+      } else if (score.Compare(rankScore) < 0) {
+        rank += tie;
+        tie = 1;
+      }
     }
     ranking.set(playerId, rank);
     rankScore = score;

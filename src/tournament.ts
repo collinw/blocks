@@ -42,11 +42,11 @@ function PlayerScoresToGameResult(players: blocks.Player[], pScores: blocks.Scor
   for (const player of players) {
     const score = pScores.Get(player.id);
     // A perfect game is a better kind of win.
-    const bonus = score === 109 ? 2 : 0;
+    const bonus = score.points === 109 ? 2 : 0;
     const rank = pRanking.Get(player.id);
 
     const agentDesc = player.agent.Description();
-    aScores[agentDesc] = score;
+    aScores[agentDesc] = score.points;
     aRanking[agentDesc] = rank;
     aPoints[agentDesc] = kRankingPoints.Get(rank) + bonus;
   }
