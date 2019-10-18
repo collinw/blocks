@@ -27,11 +27,25 @@ export class Matrix {
     return new Matrix(data);
   }
 
+  private CheckBounds(m: number, n: number) {
+    if (m < 0 || n < 0) {
+      throw new Error('Indices must be positive');
+    }
+    if (m >= this.M) {
+      throw new Error('m value out of bounds: ' + m);
+    }
+    if (n >= this.N) {
+      throw new Error('n value out of bounds: ' + n);
+    }
+  }
+
   Get(m: number, n: number): number {
+    this.CheckBounds(m, n);
     return this.matrix[m][n];
   }
 
   Set(m: number, n: number, val: number) {
+    this.CheckBounds(m, n);
     this.matrix[m][n] = val;
   }
 
