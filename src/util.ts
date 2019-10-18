@@ -84,6 +84,10 @@ export class Matrix {
     return rotated;
   }
 
+  GetRow(m: number): number[] {
+    return this.matrix[m];
+  }
+
   Copy(): Matrix {
     return new Matrix(this.matrix);
   }
@@ -91,7 +95,7 @@ export class Matrix {
   toString(): string {
     const rows = [];
     for (let m = 0; m < this.M; m++) {
-      rows.push('[' + this.matrix[m].join(', ') + ']');
+      rows.push('[' + this.GetRow(m).join(', ') + ']');
     }
     return '[' + rows.join(', ') + ']';
   }

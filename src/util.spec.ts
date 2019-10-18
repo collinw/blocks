@@ -175,6 +175,27 @@ describe('Matrix', () => {
        [3],
        [4]]));
   });
+
+  it('stringifies as expected', () => {
+    // Variations on zero-length matrices.
+    let m = util.Matrix.Zero(0, 0);
+    expect(m.toString()).to.equal("[]");
+    m = util.Matrix.Zero(1, 0);
+    expect(m.toString()).to.equal("[[]]");
+
+    m = new util.Matrix(
+      [[1],
+       [2],
+       [3],
+       [4]]);
+    expect(m.toString()).to.equal("[[1], [2], [3], [4]]");
+
+    m = new util.Matrix(
+      [[1, 2],
+       [3, 4],
+       [5, 6]]);
+    expect(m.toString()).to.equal("[[1, 2], [3, 4], [5, 6]]");
+  });
 });
 
 describe('MatrixSet', () => {
