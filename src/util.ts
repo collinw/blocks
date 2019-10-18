@@ -61,7 +61,15 @@ export class Matrix {
   }
 
   Flip(): Matrix {
-    return new Matrix(this.matrix.slice().reverse());
+    const flipped = Matrix.Zero(this.M, this.N);
+
+    for (let m = 0; m < this.M; m++) {
+      for (let n = 0; n < this.N; n++) {
+        const val = this.Get(m, n);
+        flipped.Set(this.M - m - 1, n, val);
+      }
+    }
+    return flipped;
   }
 
   RotateClockwise(): Matrix {
