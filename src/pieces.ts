@@ -65,7 +65,7 @@ export class PieceForm extends util.Matrix {
   }
 }
 
-export class PieceFormSet extends util.MatrixSet {
+export class PieceFormSet extends util.DeepSet<PieceForm> {
   constructor(data: Iterable<PieceForm>) {
     super(data);
   }
