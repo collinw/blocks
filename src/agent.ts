@@ -2,20 +2,6 @@ import * as blocks from './blocks';
 import * as pieces from './pieces';
 import * as util from './util';
 
-// Figure out which cells in the piece are valid roots.
-// TODO: cache this per-form variant so we're not having to recalculate it all the time.
-export function GetRoots(pieceForm: pieces.PieceForm): util.Coord[] {
-  const roots: util.Coord[] = [];
-  for (let m = 0; m < pieceForm.M; m++) {
-    for (let n = 0; n < pieceForm.N; n++) {
-      if (pieceForm.Get(m, n) === 1) {
-        roots.push([m, n]);
-      }
-    }
-  }
-  return roots;
-}
-
 // Conceptually, this returns a set, but an array is faster, and this is a
 // core part of the game.
 export function GenerateMove(start: util.Coord, root: util.Coord, pieceForm: pieces.PieceForm): util.Coord[] {
@@ -39,7 +25,7 @@ export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Pi
 
   for (const start of inputs.startPoints) {
     for (const variant of piece.variants) {
-      for (const root of GetRoots(variant)) {
+      for (const root of variant.roots) {
         evals++;
         const cells = GenerateMove(start, root, variant);
         const rejection = inputs.ValidateMove(cells);

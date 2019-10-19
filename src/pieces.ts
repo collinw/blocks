@@ -57,12 +57,51 @@ if (kCanonicalPieces.length !== 21) {
   throw new Error('Missing canonical pieces! Wanted 21, got ' + kCanonicalPieces.length);
 }
 
-// If I write this as "export alias PieceForm = util.Matrix", tsc won't let other
-// modules see it. Blergh.
-export class PieceForm extends util.Matrix {
-  constructor(data: number[][]) {
-    super(data);
+export class PieceForm {
+  readonly M: number;
+  readonly N: number;
+  readonly roots: util.Coord[];
+
+  constructor(matrix: util.Matrix) {
+    this.matrix = matrix;
+    this.M = matrix.M;
+    this.N = matrix.N;
+    this.roots = this.GetRoots();
   }
+
+  static From2DArray(data: number[][]): PieceForm {
+    return new PieceForm(new util.Matrix(data));
+  }
+
+  Get(m: number, n: number): number {
+    return this.matrix.Get(m, n);
+  }
+
+  RotateClockwise(): PieceForm {
+    return new PieceForm(this.matrix.RotateClockwise());
+  }
+
+  Flip(): PieceForm {
+    return new PieceForm(this.matrix.Flip());
+  }
+
+  toString(): string {
+    return this.matrix.toString();
+  }
+
+  private GetRoots(): util.Coord[] {
+    const roots: util.Coord[] = [];
+    for (let m = 0; m < this.M; m++) {
+      for (let n = 0; n < this.N; n++) {
+        if (this.Get(m, n) === 1) {
+          roots.push([m, n]);
+        }
+      }
+    }
+    return roots;
+  }
+
+  private matrix: util.Matrix;
 }
 
 export class PieceFormSet extends util.DeepSet<PieceForm> {
@@ -119,7 +158,7 @@ export function GenerateVariants(canonical: PieceForm): PieceFormSet {
 export function GetPieces(): Piece[] {
   const pieces = [];
   for (const form of kCanonicalPieces) {
-    const canonical = new PieceForm(form);
+    const canonical = PieceForm.From2DArray(form);
     pieces.push(new Piece(canonical, GenerateVariants(canonical)));
   }
   return pieces;

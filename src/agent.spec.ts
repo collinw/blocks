@@ -10,7 +10,7 @@ describe('AgentUtilities', () => {
   it('can generate a new move proposal', () => {
     // Apply the upper-left corner of this piece at (5, 5).
     const start: util.Coord = [5, 5];
-    let form = new pieces.PieceForm(
+    let form = pieces.PieceForm.From2DArray(
       [[1, 1],
        [1, 1]]);
     let root: util.Coord = [0, 0];
@@ -31,7 +31,7 @@ describe('AgentUtilities', () => {
     // Apply the center-right of this piece at (5, 5).
     // A more-complicated example: do not generate coordinates
     // for empty cells; handle interior nodes.
-    form = new pieces.PieceForm(
+    form = pieces.PieceForm.From2DArray(
       [[1, 2, 0],
        [0, 1, 1],
        [0, 1, 0]]);
