@@ -176,6 +176,17 @@ describe('Matrix', () => {
        [4]]));
   });
 
+  it('can be copied', () => {
+    const orig = new util.Matrix([[1]]);
+    const copy = orig.Copy();
+    expect(orig).to.deep.equal(copy);
+
+    // We should be able to modify the copy without modifying the original.
+    copy.Set(0, 0, 5);
+    expect(orig.toString()).to.equal('[[1]]');
+    expect(copy.toString()).to.equal('[[5]]');
+  });
+
   it('stringifies as expected', () => {
     // Variations on zero-length matrices.
     let m = util.Matrix.Zero(0, 0);
