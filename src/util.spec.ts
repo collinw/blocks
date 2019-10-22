@@ -82,17 +82,17 @@ describe('Matrix', () => {
   });
 
   it('can be constructed from 2D array', () => {
-    let mat = new util.Matrix([]);
+    let mat = util.Matrix.From2DArray([]);
     expect(mat.M).to.equal(0);
     expect(mat.N).to.equal(0);
     expect(mat.toString()).to.equal("[]");
 
-    mat = new util.Matrix([[]]);
+    mat = util.Matrix.From2DArray([[]]);
     expect(mat.M).to.equal(1);
     expect(mat.N).to.equal(0);
     expect(mat.toString()).to.equal("[[]]");
 
-    mat = new util.Matrix([[1, 2], [3, 4], [5, 6]]);
+    mat = util.Matrix.From2DArray([[1, 2], [3, 4], [5, 6]]);
     expect(mat.M).to.equal(3);
     expect(mat.N).to.equal(2);
     expect(mat.toString()).to.equal("[[1, 2], [3, 4], [5, 6]]");
@@ -110,29 +110,29 @@ describe('Matrix', () => {
     let result = m.Flip();
     expect(result).to.deep.equal(util.Matrix.Zero(0, 0));
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1, 2],
        [3, 4],
        [5, 6]]);
     result = m.Flip();
-    expect(result).to.deep.equal(new util.Matrix(
+    expect(result).to.deep.equal(util.Matrix.From2DArray(
       [[5, 6],
        [3, 4],
        [1, 2]]));
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1, 2],
        [3, 4],
        [5, 6],
        [7, 8]]);
     result = m.Flip();
-    expect(result).to.deep.equal(new util.Matrix(
+    expect(result).to.deep.equal(util.Matrix.From2DArray(
       [[7, 8],
        [5, 6],
        [3, 4],
        [1, 2]]));
     // Regression test: the original matrix should not have been modified.
-    expect(m).to.deep.equal(new util.Matrix(
+    expect(m).to.deep.equal(util.Matrix.From2DArray(
       [[1, 2],
        [3, 4],
        [5, 6],
@@ -144,32 +144,32 @@ describe('Matrix', () => {
     let result = m.RotateClockwise();
     expect(result).to.deep.equal(util.Matrix.Zero(0, 0));
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1, 2],
        [3, 4],
        [5, 6]]);
     result = m.RotateClockwise();
-    expect(result).to.deep.equal(new util.Matrix(
+    expect(result).to.deep.equal(util.Matrix.From2DArray(
       [[5, 3, 1],
        [6, 4, 2]]));
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1],
        [2],
        [3],
        [4]]);
     result = m.RotateClockwise();
-    expect(result).to.deep.equal(new util.Matrix(
+    expect(result).to.deep.equal(util.Matrix.From2DArray(
       [[4, 3, 2, 1]]));
 
     // Round-trip. Four rotations should get us back to the original data.
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1],
        [2],
        [3],
        [4]]);
     result = m.RotateClockwise().RotateClockwise().RotateClockwise().RotateClockwise();
-    expect(result).to.deep.equal(new util.Matrix(
+    expect(result).to.deep.equal(util.Matrix.From2DArray(
       [[1],
        [2],
        [3],
@@ -177,7 +177,7 @@ describe('Matrix', () => {
   });
 
   it('can be copied', () => {
-    const orig = new util.Matrix([[1]]);
+    const orig = util.Matrix.From2DArray([[1]]);
     const copy = orig.Copy();
     expect(orig).to.deep.equal(copy);
 
@@ -194,14 +194,14 @@ describe('Matrix', () => {
     m = util.Matrix.Zero(1, 0);
     expect(m.toString()).to.equal("[[]]");
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1],
        [2],
        [3],
        [4]]);
     expect(m.toString()).to.equal("[[1], [2], [3], [4]]");
 
-    m = new util.Matrix(
+    m = util.Matrix.From2DArray(
       [[1, 2],
        [3, 4],
        [5, 6]]);

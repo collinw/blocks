@@ -70,7 +70,7 @@ export class PieceForm {
   }
 
   static From2DArray(data: number[][]): PieceForm {
-    return new PieceForm(new util.Matrix(data));
+    return new PieceForm(util.Matrix.From2DArray(data));
   }
 
   Get(m: number, n: number): number {

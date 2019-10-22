@@ -1,21 +1,15 @@
 export class Matrix {
-  private matrix: number[][];
+  readonly M: number;
+  readonly N: number;
 
-  constructor(data: number[][]) {
-    this.matrix = [];
-
-    if (data.length > 0) {
-      const m = data.length;
-      const n = data[0].length;
-
-      for (let i = 0; i < m; i++) {
-        const row = [];
-        for (let j = 0; j < n; j++) {
-          row.push(data[i][j]);
-        }
-        this.matrix.push(row);
-      }
+  static From2DArray(data: number[][]): Matrix {
+    if (data.length === 0) {
+      return new Matrix(0, 0, []);
     }
+
+    const m = data.length;
+    const n = data[0].length;
+    return new Matrix(m, n, data);
   }
 
   static Zero(m: number, n: number) {
@@ -24,7 +18,7 @@ export class Matrix {
       data.push(new Array(n).fill(0));
     }
 
-    return new Matrix(data);
+    return new Matrix(m, n, data);
   }
 
   private CheckBounds(m: number, n: number) {
@@ -47,17 +41,6 @@ export class Matrix {
   Set(m: number, n: number, val: number) {
     this.CheckBounds(m, n);
     this.matrix[m][n] = val;
-  }
-
-  get M(): number {
-    return this.matrix.length;
-  }
-
-  get N(): number {
-    if (this.M === 0) {
-      return 0;
-    }
-    return this.matrix[0].length;
   }
 
   Flip(): Matrix {
@@ -89,7 +72,13 @@ export class Matrix {
   }
 
   Copy(): Matrix {
-    return new Matrix(this.matrix);
+    const copy = Matrix.Zero(this.M, this.N);
+    for (let m = 0; m < this.M; m++) {
+      for (let n = 0; n < this.N; n++) {
+        copy.Set(m, n, this.Get(m, n));
+      }
+    }
+    return copy;
   }
 
   toString(): string {
@@ -99,6 +88,14 @@ export class Matrix {
     }
     return '[' + rows.join(', ') + ']';
   }
+
+  private constructor(m: number, n: number, data: number[][]) {
+    this.M = m;
+    this.N = n;
+    this.matrix = data;
+  }
+
+  private matrix: number[][];
 }
 
 // The ES6 Set type uses === to compare objects, so it doesn't consider
