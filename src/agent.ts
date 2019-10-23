@@ -168,10 +168,13 @@ export class RankingAgent implements blocks.Agent {
   }
 
   MakeMove(inputs: blocks.PlayerInputs, ps: pieces.Piece[]): blocks.Move|blocks.GiveUp {
+    // Figure this out once, use it when ranking all moves.
+    const oldStartPoints = CountStartPoints(inputs.state.board, inputs.player.id);
+
     const moves: Array<[number, blocks.Move]> = [];
     for (const piece of ps) {
       for (const move of GenerateValidMoves(inputs, piece)) {
-        const score = this.ScoreMove(inputs.state.board, move, inputs.player.id);
+        const score = this.ScoreMove(oldStartPoints, inputs.state.board, move, inputs.player.id);
         moves.push([score, move]);
       }
     }
@@ -187,7 +190,7 @@ export class RankingAgent implements blocks.Agent {
     return 'Ranking(' + this.weights.join(', ') + ')';
   }
 
-  ScoreMove(currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
+  ScoreMove(oldStartPoints: number, currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
     const board = GetBoardAfterMove(currBoard, move, playerId);
 
     let points = 0;
@@ -199,8 +202,7 @@ export class RankingAgent implements blocks.Agent {
         }
       }
     }
-    // Attributes of the board.
-    const oldStartPoints = CountStartPoints(currBoard, playerId);
+    // Attributes of the board after the move.
     const newStartPoints = CountStartPoints(board, playerId);
     const delta = newStartPoints - oldStartPoints;
 
