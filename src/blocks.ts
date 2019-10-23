@@ -52,7 +52,10 @@ export class Player {
   }
 
   MakeMove(inputs: PlayerInputs): Move|GiveUp {
-    return this.agent.MakeMove(inputs, this.pieces);
+    window.performance.mark('MakeMove_start');
+    const move = this.agent.MakeMove(inputs, this.pieces);
+    window.performance.measure('MakeMoveMeasure', 'MakeMove_start');
+    return move;
   }
 
   // Return a version of this player's state after having made the given move.
