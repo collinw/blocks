@@ -54,6 +54,22 @@ function PlayerScoresToGameResult(players: blocks.Player[], pScores: blocks.Scor
   return new GameResult(aScores, aRanking, aPoints);
 }
 
+export class AgentRecord {
+  agent: blocks.Agent;
+  totalRankingPoints: number;
+  gamesPlayed: number;
+
+  constructor(agent: blocks.Agent) {
+    this.agent = agent;
+    this.totalRankingPoints = 0;
+    this.gamesPlayed = 0;
+  }
+
+  MeanRanking(): number {
+    return this.totalRankingPoints / this.gamesPlayed;
+  }
+}
+
 type TournamentCallback = (t: Tournament) => void;
 
 export class Tournament {

@@ -130,3 +130,13 @@ export function DrawTournament(t: tournament.Tournament) {
 
   $('#tournament-score').html(rows.join(''));
 }
+
+export function DrawAgentRanking(agentRecords: tournament.AgentRecord[]) {
+  const rows = [];
+  for (const record of agentRecords) {
+    const points = util.TruncateNumber(record.MeanRanking(), 3);
+    const row = '<tr><td>' + record.agent.Description() + '</td><td class="points">' + points + '</td><td class="games">' + record.gamesPlayed + '</td></tr>';
+    rows.push(row);
+  }
+  $('#agent-table tbody').html(rows.join(''));
+}

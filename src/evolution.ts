@@ -30,32 +30,16 @@ function MutateWeights(weights: number[]): number[] {
   return newWeights;
 }
 
-class AgentRecord {
-  agent: blocks.Agent;
-  totalRankingPoints: number;
-  gamesPlayed: number;
-
-  constructor(agent: blocks.Agent) {
-    this.agent = agent;
-    this.totalRankingPoints = 0;
-    this.gamesPlayed = 0;
-  }
-
-  MeanRanking(): number {
-    return this.totalRankingPoints / this.gamesPlayed;
-  }
-}
-
-function SortHighestMeanRanking(a1: AgentRecord, a2: AgentRecord): number {
+function SortHighestMeanRanking(a1: tournament.AgentRecord, a2: tournament.AgentRecord): number {
   return a2.MeanRanking() - a1.MeanRanking();
 }
 
-function SortLeastPlayed(a1: AgentRecord, a2: AgentRecord): number {
+function SortLeastPlayed(a1: tournament.AgentRecord, a2: tournament.AgentRecord): number {
   return a1.gamesPlayed - a2.gamesPlayed;
 }
 
 class Darwin {
-  private agents: Map<string, AgentRecord>;
+  private agents: Map<string, tournament.AgentRecord>;
   private rounds: number;
 
   constructor() {
@@ -71,7 +55,7 @@ class Darwin {
     for (const agent of generation) {
       const desc = agent.Description();
       if (!this.agents.has(desc)) {
-        this.agents.set(desc, new AgentRecord(agent));
+        this.agents.set(desc, new tournament.AgentRecord(agent));
       }
     }
 
@@ -117,12 +101,14 @@ class Darwin {
           ') = ' + util.TruncateNumber(record.MeanRanking(), 3));
     }
 
+    ui.DrawAgentRanking(records);
+
     // Do it again.
     const generation = this.MakeGeneration(records, bestAgent);
     this.RunTournament(generation);
   }
 
-  MakeGeneration(records: AgentRecord[], bestAgent: blocks.Agent): blocks.Agent[] {
+  MakeGeneration(records: tournament.AgentRecord[], bestAgent: blocks.Agent): blocks.Agent[] {
     if (this.rounds % 5 === 0) {
       console.log("Picking players with the least experience");
       records.sort(SortLeastPlayed);

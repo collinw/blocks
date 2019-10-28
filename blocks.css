@@ -97,3 +97,21 @@
 #evolution {
   display: flex;
 }
+#agent-ranking {
+  margin-left: 25px;
+}
+#agent-table {
+  border: 1px solid grey;
+  border-spacing: 0px;
+}
+#agent-table th {
+  border: 1px solid grey;
+  margin: 0px;
+  padding: 5px;
+}
+#agent-table .points {
+  text-align: center;
+}
+#agent-table .games {
+  text-align: center;
+}
