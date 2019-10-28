@@ -21,12 +21,10 @@ export function GenerateMove(start: util.Coord, root: util.Coord, pieceForm: pie
 
 export function GenerateValidMoves(inputs: blocks.PlayerInputs, piece: pieces.Piece): blocks.Move[] {
   const valid = [];
-  let evals = 0;
 
   for (const start of inputs.startPoints) {
     for (const variant of piece.variants) {
       for (const root of variant.roots) {
-        evals++;
         const cells = GenerateMove(start, root, variant);
         const rejection = inputs.ValidateMove(cells);
         if (rejection) {
