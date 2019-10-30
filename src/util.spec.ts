@@ -193,6 +193,10 @@ describe('Matrix', () => {
     expect(m.toString()).to.equal("[]");
     m = util.Matrix.Zero(1, 0);
     expect(m.toString()).to.equal("[[]]");
+    m = util.Matrix.Zero(3, 1);
+    expect(m.toString()).to.equal("[[0], [0], [0]]");
+    m = util.Matrix.Zero(1, 3);
+    expect(m.toString()).to.equal("[[0, 0, 0]]");
 
     m = util.Matrix.From2DArray(
       [[1],

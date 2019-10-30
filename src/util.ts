@@ -7,17 +7,19 @@ export class Matrix {
       return new Matrix(0, 0, []);
     }
 
-    const m = data.length;
-    const n = data[0].length;
-    return new Matrix(m, n, data);
+    const M = data.length;
+    const N = data[0].length;
+    const matrix = Matrix.Zero(M, N);
+    for (let m = 0; m < M; m++) {
+      for (let n = 0; n < N; n++) {
+        matrix.Set(m, n, data[m][n]);
+      }
+    }
+    return matrix;
   }
 
   static Zero(m: number, n: number) {
-    const data = [];
-    for (let i = 0; i < m; i++) {
-      data.push(new Array(n).fill(0));
-    }
-
+    const data = new Array(m * n).fill(0);
     return new Matrix(m, n, data);
   }
 
@@ -35,12 +37,12 @@ export class Matrix {
 
   Get(m: number, n: number): number {
     this.CheckBounds(m, n);
-    return this.matrix[m][n];
+    return this.matrix[this.Idx(m, n)];
   }
 
   Set(m: number, n: number, val: number) {
     this.CheckBounds(m, n);
-    this.matrix[m][n] = val;
+    this.matrix[this.Idx(m, n)] = val;
   }
 
   Flip(): Matrix {
@@ -68,7 +70,8 @@ export class Matrix {
   }
 
   GetRow(m: number): number[] {
-    return this.matrix[m];
+    const start = m * this.N;
+    return this.matrix.slice(start, start + this.N);
   }
 
   Copy(): Matrix {
@@ -89,13 +92,17 @@ export class Matrix {
     return '[' + rows.join(', ') + ']';
   }
 
-  private constructor(m: number, n: number, data: number[][]) {
+  private Idx(m: number, n: number): number {
+    return m * this.N + n;
+  }
+
+  private constructor(m: number, n: number, data: number[]) {
     this.M = m;
     this.N = n;
     this.matrix = data;
   }
 
-  private matrix: number[][];
+  private matrix: number[];
 }
 
 // The ES6 Set type uses === to compare objects, so it doesn't consider
