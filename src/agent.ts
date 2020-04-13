@@ -177,20 +177,12 @@ export class RankingAgent implements blocks.Agent {
   ScoreMove(oldStartPoints: number, currBoard: util.Matrix, move: blocks.Move, playerId: number): number {
     const board = GetBoardAfterMove(currBoard, move, playerId);
 
-    let points = 0;
-    for (let m = 0; m < board.M; m++) {
-      for (let n = 0; n < board.N; n++) {
-        const val = board.Get(m, n);
-        if (val === playerId) {
-          points += 1;
-        }
-      }
-    }
     // Attributes of the board after the move.
     const newStartPoints = CountStartPoints(board, playerId);
     const delta = newStartPoints - oldStartPoints;
 
     // Attributes of the piece to be played.
+    const points = move.piece.points;
     const pieceArea = ScorePieceArea(move.piece);
     const interiorCells = CountInteriorCells(move.piece.canonical);
 
