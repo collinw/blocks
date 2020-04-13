@@ -97,6 +97,9 @@
 #evolution {
   display: flex;
 }
+#evolution #tournament {
+  width: 60%
+}
 #agent-ranking {
   margin-left: 25px;
 }
